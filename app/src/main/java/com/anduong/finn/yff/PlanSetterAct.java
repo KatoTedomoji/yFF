@@ -49,34 +49,15 @@ public class PlanSetterAct extends AppCompatActivity {
         loadingBar = (ProgressBar) findViewById(R.id.plan_setter_loading_bar);
 
         loadingBar.setVisibility(View.GONE);
-        setupWeekdayParentsList();
+        setupWeekdayParentsListFor(weekdayParentsList);
         setupDayButtons();
-        setupFooterButtons();
-        setButtonClickColor(cancelBtn,Color.RED);
-        setButtonClickColor(confirmBtn,Color.GREEN);
+        setupFooterButtons(cancelBtn, confirmBtn);
     }
-    private void setupWeekdayParentsList(){
+    private void setupWeekdayParentsListFor(ArrayList list){
        for(int layoutIndex = 0; layoutIndex < 7; layoutIndex++){
-           weekdayParentsList.add(new ArrayList<View>());
+           list.add(new ArrayList<View>());
        }
     }//add 7 list represents exercises for Monday,Tues,Weds,etc...
-    private void setupFooterButtons(){
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(PlanSetterAct.this, UserMainAct.class));
-                Utilities.debugLog("User cancel plan setter, moving to MainUser");
-            }
-        });
-
-        confirmBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(PlanSetterAct.this, UserMainAct.class));
-                Utilities.debugLog("User confirm plan setter, moving to MainUser");
-            }
-        });
-    }//include cancel and confirm button
     private void setupDayButtons(){
         dayBtnList = new ArrayList<Button>();
 
@@ -109,6 +90,7 @@ public class PlanSetterAct extends AppCompatActivity {
         addBtn.setVisibility(View.GONE);
         loadingBar.setVisibility(View.VISIBLE);
         exercisesParent.removeAllViews();
+
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -121,12 +103,11 @@ public class PlanSetterAct extends AppCompatActivity {
                     setVisibleAndFadeIn(context, exercisesParent.getChildAt(childIndex));
                 }//refill exerciseParent
 
-               // hideFillerIfExerciseParentHasChildren();
                 setVisibleAndFadeIn(context,addBtn);
                 scrollToLastAddedToList(weekdayParent);
             }
         }, 200);
-    }//remove add button for .2sec for loading animation
+    }//loading animation handling
     private void highlightSelectedButton(Button button, boolean isSelected){
         if(isSelected){
             button.setTextColor(Color.WHITE);
@@ -146,7 +127,7 @@ public class PlanSetterAct extends AppCompatActivity {
                 exercisesParent.addView(inflatedLayout);//add to visible view
                 scrollToLastAddedToList(exerciseList);
                 setVisibleAndPop(context,inflatedLayout);
-                hideFillerIfExerciseParentHasChildren();
+                hideFillerIfExerciseParentHasChildren(exercisesParent);
             }
         });
     }
@@ -164,11 +145,31 @@ public class PlanSetterAct extends AppCompatActivity {
             }
         });
     }// work exclusively with setupAddButtonFor
-    private void hideFillerIfExerciseParentHasChildren(){
-        if(exercisesParent.getChildCount() > 0){
+    private void hideFillerIfExerciseParentHasChildren(LinearLayout parent){
+        if(parent.getChildCount() > 0){
             fillerBtn.setVisibility(View.GONE);
         }else {
             fillerBtn.setVisibility(View.VISIBLE);
         }
     }//hide filler button
+    private void setupFooterButtons(Button cancel, Button confirm){
+        setButtonClickColor(cancel,Color.RED);
+        setButtonClickColor(confirm,Color.GREEN);
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(PlanSetterAct.this, UserMainAct.class));
+                Utilities.debugLog("User cancel plan setter, moving to MainUser");
+            }
+        });
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(PlanSetterAct.this, UserMainAct.class));
+                Utilities.debugLog("User confirm plan setter, moving to MainUser");
+            }
+        });
+    }//moving back to UserMain
 }

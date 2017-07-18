@@ -51,7 +51,7 @@ public class Utilities {
         mondayDate = Integer.parseInt(dateFormat.format(weekStart));
         return mondayDate;
     }// for logging later, to open pictureTaker on every monday onnce
-    public static String getWeekDay(){
+    public static String getCurrentWeekDay(){
         Date date = Calendar.getInstance().getTime();
         return new SimpleDateFormat("EEEE",Locale.ENGLISH).format(date.getTime());
     }
@@ -69,12 +69,12 @@ public class Utilities {
         Animation fadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_down);
         view.startAnimation(fadeInAnimation);
         view.setVisibility(View.INVISIBLE);
-    }
+    }//slide down, only use to make it disappear
     public static void setVisibleAndSlideUpAnimation(Context context,View view){
         view.setVisibility(View.VISIBLE);
         Animation fadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_up);
         view.startAnimation(fadeInAnimation);
-    }
+    }//slide up
     public static int getScreenWidth(){
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }//for positioning
@@ -90,7 +90,7 @@ public class Utilities {
                 return false;
             }
         });
-    }
+    }//set text and background color
     public static void setButtonTextClickColor(final Button btn, final int color){
         btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -103,16 +103,11 @@ public class Utilities {
                 return false;
             }
         });
-    }
-    public static void shufflingList(ArrayList list){
-
-    }
-    //generate debug log for testing
+    }//set text color
     public static int debugLog(String logger){
         return Log.d("appDebug",logger);
-    }
-    //generate debug log with exception for testing
+    }//generate debug log for testing
     public static int debugLog(String logger, Exception e){
         return Log.d("appDebug",logger,e);
-    }
+    } //generate debug log with exception for testing
 }

@@ -26,17 +26,20 @@ public class PlanSelectAct extends AppCompatActivity {
         btnLayout = (LinearLayout) findViewById(R.id.plan_select_btn_layout);
         buttonList = new ArrayList<Button>();
 
-        for(int btnIndex = 0 ; btnIndex < btnLayout.getChildCount(); btnIndex++){
-            Button btn = (Button) btnLayout.getChildAt(btnIndex);
+        setupAnimationFor(btnLayout, buttonList);
+        setButtonListener();
+
+    }
+
+    private void setupAnimationFor(LinearLayout layout, ArrayList buttonList){
+        for(int btnIndex = 0 ; btnIndex < layout.getChildCount(); btnIndex++){
+            Button btn = (Button) layout.getChildAt(btnIndex);
             btn.setTranslationX(Utilities.getScreenWidth()-140);
             Utilities.setButtonClickColor(btn,Color.GREEN);
             buttonList.add(btn);
         }
-
-        setListener();
-
     }
-    private void setListener(){
+    private void setButtonListener(){
         for(final Button btn : buttonList){
             btn.animate().setDuration(1000);
             btn.animate().translationXBy(-(Utilities.getScreenWidth()-140));
