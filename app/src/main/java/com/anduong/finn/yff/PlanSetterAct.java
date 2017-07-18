@@ -1,7 +1,7 @@
 package com.anduong.finn.yff;
 
-import static com.anduong.finn.yff.Utilities.setVisibleAndAnimate;
-import static com.anduong.finn.yff.Utilities.setVisibleAndAnimateTwo;
+import static com.anduong.finn.yff.Utilities.setVisibleAndPop;
+import static com.anduong.finn.yff.Utilities.setVisibleAndFadeIn;
 import static com.anduong.finn.yff.Utilities.setButtonClickColor;
 
 import android.content.Context;
@@ -118,11 +118,11 @@ public class PlanSetterAct extends AppCompatActivity {
 
                 for(int childIndex = 0; childIndex < weekdayParent.size() ; childIndex++){
                     exercisesParent.addView(weekdayParent.get(childIndex));
-                    setVisibleAndAnimateTwo(context, exercisesParent.getChildAt(childIndex));
+                    setVisibleAndFadeIn(context, exercisesParent.getChildAt(childIndex));
                 }//refill exerciseParent
 
                // hideFillerIfExerciseParentHasChildren();
-                setVisibleAndAnimateTwo(context,addBtn);
+                setVisibleAndFadeIn(context,addBtn);
                 scrollToLastAddedToList(weekdayParent);
             }
         }, 200);
@@ -145,7 +145,7 @@ public class PlanSetterAct extends AppCompatActivity {
                 exerciseList.add(inflatedLayout);//add to back-end list
                 exercisesParent.addView(inflatedLayout);//add to visible view
                 scrollToLastAddedToList(exerciseList);
-                setVisibleAndAnimate(context,inflatedLayout);
+                setVisibleAndPop(context,inflatedLayout);
                 hideFillerIfExerciseParentHasChildren();
             }
         });

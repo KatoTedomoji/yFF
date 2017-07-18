@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 loadingBar.setVisibility(View.GONE);
                 if(permissionGranted()){
-                    Utilities.setVisibleAndAnimate(context,accessYes);
+                    Utilities.setVisibleAndPop(context,accessYes);
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     },1000);
                 }else{
-                    Utilities.setVisibleAndAnimate(context,accessNo);
+                    Utilities.setVisibleAndPop(context,accessNo);
                     ActivityCompat.requestPermissions(MainActivity.this, permissions,1);
                     Utilities.debugLog("No permission, cant proceed");
                 }
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     accessNo.setVisibility(View.INVISIBLE);
                     permissionView.setText("Access Granted");
-                    Utilities.setVisibleAndAnimate(context,accessYes);
+                    Utilities.setVisibleAndPop(context,accessYes);
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {

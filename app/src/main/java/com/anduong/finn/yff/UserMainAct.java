@@ -24,6 +24,7 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import static com.anduong.finn.yff.Utilities.*;
 
@@ -41,9 +42,9 @@ public class UserMainAct extends AppCompatActivity {
     private TextView planName;
     private Button tabOnOffBtn,resetPlanBtn,shufflePlanBtn;
     private ArrayList<Button> weekdayBtns;
-    private ArrayList<RelativeLayout> exerciseList;
     private LinearLayout mainHeaderLayout;
     private LinearLayout buttonsParent, exerciseCheckList;
+    private ArrayList<LinearLayout> exerciseList;
     private TextView exerciseName,exerciseRep;
     private TextView timerText;
     static  List<WeekScheduler> weeksList;
@@ -67,10 +68,10 @@ public class UserMainAct extends AppCompatActivity {
         timer = (Chronometer) findViewById(R.id.schedule_chronometer);
         weeksList = Saver.loadSchedulesData(context);
         weekdayBtns = new ArrayList<Button>();
-        exerciseList = new ArrayList<RelativeLayout>();
         mainHeaderLayout = (LinearLayout) findViewById(R.id.main_header_layout);
         timerOn = false;
         planName = (TextView) findViewById(R.id.schedule_plan_name);
+        exerciseList = new ArrayList<>();
 
         host.setup();
         animatingTabWidget();
@@ -129,7 +130,7 @@ public class UserMainAct extends AppCompatActivity {
        // spinner = (Spinner) findViewById(R.id.scheduleSpinner);
 
         for(int i = 0; i < 10 ; i++){
-            addExerciseToCheckList("Squat", 10);
+            addExerciseToCheckList("Squat "+i, 10);
         }
 
         timer.setVisibility(View.GONE);
@@ -162,7 +163,7 @@ public class UserMainAct extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
-        });*/
+    });*/
     }//TODO delete spinner later, use TextView instead to get plan name from PlanSelect
     private void setupWeekdayButtons(){
         for(int btnIndex = 0; btnIndex < buttonsParent.getChildCount();btnIndex++){
@@ -179,31 +180,46 @@ public class UserMainAct extends AppCompatActivity {
         highlightTodaysBtn();
     }
     private void setupResetBtn(){
+        setButtonTextClickColor(resetPlanBtn, Color.RED);
         resetPlanBtn.setOnClickListener(new View.OnClickListener() {
-            boolean isNotClicked = true;
             @Override
             public void onClick(View view) {
-                setButtonClickColor(resetPlanBtn,Color.GREEN);
                 startActivity(new Intent(UserMainAct.this, PlanSelectAct.class));
                 Utilities.debugLog("User cancel plan setter, moving to PlanSelectAct");
             }
         });
     }
     private void setupShuffleBtn(){
-        shufflePlanBtn.setOnClickListener(new View.OnClickListener() {
+        setButtonTextClickColor(shufflePlanBtn,Color.GREEN);
+        for(int childIndex = 0; childIndex < exerciseCheckList.getChildCount(); childIndex++){
+            exerciseList.add((LinearLayout) exerciseCheckList.getChildAt(childIndex));
+        }
+
+        shufflePlanBtn.setOnClickListener(new View.OnClickListener() {//TODO refactor clean up
             @Override
             public void onClick(View view) {
-                shufflePlanBtn.setTextColor(ColorStateList.valueOf(Color.GREEN));
+                debugLog("shuffling");
+                for(LinearLayout child : exerciseList){
+                    setInvisibleAndSlideDownAnimation(context,child);
+
+                }
+                Collections.shuffle(exerciseList);
+                exerciseCheckList.removeAllViews();
+                for(LinearLayout child: exerciseList){
+                    exerciseCheckList.addView(child);
+                }
                 final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {//delaying for 1milsec
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                      shufflePlanBtn.setTextColor(ColorStateList.valueOf(Color.BLACK));
+                        for(LinearLayout child : exerciseList){
+                            setVisibleAndSlideUpAnimation(context,child);
+                        }
                     }
-                }, 100);
+                },1000);
             }
         });
-    }//TODO implement shuffle of exercises from selected day Button
+    }
     private void highlightTodaysBtn(){
         for(Button todayBtn : weekdayBtns){
             if(todayBtn.getText().toString().equals(Utilities.getWeekDay())){
@@ -305,12 +321,12 @@ public class UserMainAct extends AppCompatActivity {
             @Override
             public boolean onLongClick(View view) {
                 if(timerText.getText().toString().equals("Workout Stopped")){
-                    //Utilities.setVisibleAndAnimate(context,mainHeaderLayout);
+                    //Utilities.setVisibleAndPop(context,mainHeaderLayout);
                     timerText.setText("Click to Start Workout");
                     timerText.setTextColor(Color.GRAY);
                     timer.setVisibility(View.GONE);
                     timer.setBase(SystemClock.elapsedRealtime());
-                    Utilities.setVisibleAndAnimate(context,timerText);
+                    Utilities.setVisibleAndPop(context,timerText);
                     timeStopped[0] = 0;
                     timerOn= false;
 

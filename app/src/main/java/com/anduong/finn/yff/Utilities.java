@@ -11,7 +11,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
@@ -53,16 +55,26 @@ public class Utilities {
         Date date = Calendar.getInstance().getTime();
         return new SimpleDateFormat("EEEE",Locale.ENGLISH).format(date.getTime());
     }
-    public static void setVisibleAndAnimate(Context context, View view){
+    public static void setVisibleAndPop(Context context, View view){
         Animation popAnimate = AnimationUtils.loadAnimation(context, R.anim.pop_animation);
         view.setVisibility(View.VISIBLE);
         view.startAnimation(popAnimate);
     }//pop
-    public static void setVisibleAndAnimateTwo(Context context, View view){
+    public static void setVisibleAndFadeIn(Context context, View view){
         Animation fadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fade_in);
         view.setVisibility(View.VISIBLE);
         view.startAnimation(fadeInAnimation);
     }//fade in
+    public static void setInvisibleAndSlideDownAnimation(Context context,View view){
+        Animation fadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_down);
+        view.startAnimation(fadeInAnimation);
+        view.setVisibility(View.INVISIBLE);
+    }
+    public static void setVisibleAndSlideUpAnimation(Context context,View view){
+        view.setVisibility(View.VISIBLE);
+        Animation fadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_up);
+        view.startAnimation(fadeInAnimation);
+    }
     public static int getScreenWidth(){
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }//for positioning
@@ -78,8 +90,23 @@ public class Utilities {
                 return false;
             }
         });
-    }//button and click color
+    }
+    public static void setButtonTextClickColor(final Button btn, final int color){
+        btn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    btn.setTextColor(Color.BLACK);
+                } else if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    btn.setTextColor(color);
+                }
+                return false;
+            }
+        });
+    }
+    public static void shufflingList(ArrayList list){
 
+    }
     //generate debug log for testing
     public static int debugLog(String logger){
         return Log.d("appDebug",logger);
