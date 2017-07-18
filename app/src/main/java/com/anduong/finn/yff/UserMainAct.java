@@ -173,24 +173,24 @@ public class UserMainAct extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 debugLog("shuffling");
+                shufflePlanBtn.setEnabled(false);
+
                 for(LinearLayout child : exerciseList){
                     setInvisibleAndSlideDownAnimation(context,child);
-
-                }
-                Collections.shuffle(exerciseList);
-                exerciseCheckList.removeAllViews();
-                for(LinearLayout child: exerciseList){
-                    exerciseCheckList.addView(child);
                 }
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        exerciseCheckList.removeAllViews();
+                        Collections.shuffle(exerciseList);
                         for(LinearLayout child : exerciseList){
+                            exerciseCheckList.addView(child);
                             setVisibleAndSlideUpAnimation(context,child);
                         }
+                        shufflePlanBtn.setEnabled(true);
                     }
-                },1000);
+                },500);
             }
         });
     }//click will animate and shuffle exerciseCheckList children order

@@ -1,5 +1,9 @@
 package com.anduong.finn.yff;
 
+import static com.anduong.finn.yff.Utilities.debugLog;
+import static com.anduong.finn.yff.Utilities.setButtonClickColor;
+
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,28 +20,46 @@ import java.util.ArrayList;
 
 public class PlanSelectAct extends AppCompatActivity {
     private ArrayList<Button> buttonList;
-    private LinearLayout btnLayout;
+    private LinearLayout btnLayout,planLayout;
     public String selectedPlanStr = "";
+    private Context context = this;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.plan_select);
         btnLayout = (LinearLayout) findViewById(R.id.plan_select_btn_layout);
+        planLayout = (LinearLayout) findViewById(R.id.plan_select_plan_list);
         buttonList = new ArrayList<Button>();
 
-        setupAnimationFor(btnLayout, buttonList);
+        planLayout.addView(createSelectItemView("Buff"));
+        planLayout.addView(createSelectItemView("Lean"));
+
+
+        setupAnimationFor(planLayout, buttonList);
         setButtonListener();
 
     }
-
-    private void setupAnimationFor(LinearLayout layout, ArrayList buttonList){
+    private View createSelectItemView(String title){
+        View inflatedLayout = getLayoutInflater().inflate(R.layout.plan_select_item,null);
+        Button b = inflatedLayout.findViewById(R.id.plan_select_btn);
+        b.setText(title);
+        return inflatedLayout;
+    }
+    private void setupAnimationFor(LinearLayout layout, ArrayList<Button> buttonList){
         for(int btnIndex = 0 ; btnIndex < layout.getChildCount(); btnIndex++){
-            Button btn = (Button) layout.getChildAt(btnIndex);
-            btn.setTranslationX(Utilities.getScreenWidth()-140);
-            Utilities.setButtonClickColor(btn,Color.GREEN);
+            LinearLayout outer = (LinearLayout) layout.getChildAt(btnIndex);
+            Button btn = outer.findViewById(R.id.plan_select_btn);
             buttonList.add(btn);
         }
+        buttonList.add((Button)btnLayout.findViewById(R.id.plan_select_custom_btn));
+        for(Button button : buttonList){
+         animateButton(button);
+        }
+    }
+    private void animateButton(Button button){
+        button.setTranslationX(Utilities.getScreenWidth()-140);
+        setButtonClickColor(button,Color.GREEN);
     }
     private void setButtonListener(){
         for(final Button btn : buttonList){
@@ -48,11 +70,11 @@ public class PlanSelectAct extends AppCompatActivity {
                 public void onClick(View view) {
                     if(btn.getText().toString().equalsIgnoreCase("custom")){
                         startActivity(new Intent(PlanSelectAct.this, PlanSetterAct.class));
-                        Utilities.debugLog("Moving to UserMainACt");
+                        debugLog("Moving to UserMainACt");
                     }else{
                         startActivity(new Intent(PlanSelectAct.this, UserMainAct.class));
                         selectedPlanStr = btn.getText().toString();
-                        Utilities.debugLog("Moving to UserMainACt");
+                        debugLog("Moving to UserMainACt");
                     }
                 }
             });

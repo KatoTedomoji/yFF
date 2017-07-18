@@ -19,7 +19,6 @@ import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
-
 /**
  * Created by An Duong on 6/16/2017.
  */
