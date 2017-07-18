@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="300dp"
+    android:layout_height="fill_parent"
+    android:background="@drawable/button_border"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/button_border">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:id="@+id/exercise_parent"
+                android:gravity="center"
+                android:layout_margin="3dp"
+                android:background="@color/white">
+                <TextView
+                    android:id="@+id/exercise_child_rep"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="x10"
+                    android:textSize="40dp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/black"
+                    android:textAlignment="center" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <TextView
+                        android:id="@+id/exercise_child"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Bench"
+                        android:textSize="50dp"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="40dp"
+                        android:text="145 lbs"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+</LinearLayout>

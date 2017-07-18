@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/button_border"
+    android:layout_margin="5dp">
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:textSize="40dp"
+        android:text="Select A Plan" />
+
+    <LinearLayout
+        android:id="@+id/plan_select_btn_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        >
+
+        <Button
+            android:id="@+id/plan_select_mass_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginBottom="5dp"
+            android:textSize="50dp"
+            android:text="Mass"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:background="#000"
+            android:textColor="#fff"/>
+
+        <Button
+            android:id="@+id/plan_select_lean_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="right"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="Lean"
+            android:textSize="50dp"
+            android:layout_marginLeft="20dp"
+            android:background="#000"
+            android:textColor="#fff"
+            android:textAlignment="center"
+            />
+
+        <Button
+            android:id="@+id/plan_select_custom_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="Custom"
+            android:textSize="50dp"
+            android:layout_marginLeft="20dp"
+            android:background="#000"
+            android:textColor="#fff"/>
+    </LinearLayout>
+</RelativeLayout>

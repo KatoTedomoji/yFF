@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:layout_editor_absoluteY="25dp"
+    tools:layout_editor_absoluteX="0dp"
+    android:background="@drawable/button_border"
+    android:layout_margin="5dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+        <TextView
+            android:id="@+id/title1Lbl"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="68dp"
+            android:text="ARE YOU WILLING"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="40dp" />
+
+
+        <TextView
+            android:id="@+id/tile2Lbl"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="TO COMMIT TO"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="120dp"
+            android:textSize="25dp"
+           />
+
+        <TextView
+            android:id="@+id/title3Lbl"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="BEING HEALTHIER?"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="35dp"
+            android:textStyle="bold"
+            android:layout_marginTop="150dp"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="70dp">
+        <Button
+            android:id="@+id/new_nosBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="no..."
+            android:textSize="30dp"
+            android:textColor="#ffffff"
+            android:background="#000000"
+            android:layout_weight="1"
+            android:layout_marginRight="2dp"/>
+        <Button
+            android:id="@+id/new_yesBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="YES!"
+            android:textSize="30dp"
+            android:textColor="#ffffff"
+            android:background="#000000"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

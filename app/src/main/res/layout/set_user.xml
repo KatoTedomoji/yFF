@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/button_border"
+    android:layout_margin="5dp"
+    android:focusableInTouchMode="true">
+
+    <TextView
+        android:id="@+id/userTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lets record some data"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="53dp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp">
+
+        <EditText
+            android:id="@+id/nameTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/name"
+            android:layout_toEndOf="@+id/name"
+            android:textAlignment="center"
+            android:ems="10"
+            android:textColor="#000000"
+            android:inputType="textPersonName" />
+        <EditText
+            android:id="@+id/currWeightTxt"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_alignBaseline="@+id/currWeight"
+            android:layout_alignBottom="@+id/currWeight"
+            android:layout_toEndOf="@+id/currWeight"
+            android:ems="10"
+            android:textColor="#000000"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/goalWeightTxt"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/goalWeight"
+            android:layout_alignBottom="@+id/goalWeight"
+            android:textAlignment="center"
+            android:layout_alignStart="@+id/currWeightTxt"
+            android:textColor="#000000"
+            android:ems="10"
+            android:inputType="numberDecimal" />
+
+        <TextView
+            android:id="@+id/currWeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Weight :"
+            android:textColor="@android:color/black"
+            android:textSize="25dp"
+            android:layout_below="@+id/nameTxt"
+            android:layout_alignStart="@+id/name"
+            android:layout_marginTop="47dp" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name :"
+            android:textColor="@android:color/black"
+            android:textSize="25dp"
+            android:layout_marginTop="58dp" />
+
+        <TextView
+            android:id="@+id/goalWeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="47dp"
+            android:text="Target Weight :"
+            android:textColor="@android:color/black"
+            android:textSize="25dp"
+            android:layout_below="@+id/currWeightTxt"
+            android:layout_alignStart="@+id/currWeight" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/userSetterNextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="70dp"
+        android:paddingRight="70dp"
+        android:paddingLeft="20dp"
+        android:textSize="30dp"
+        android:background="#000000"
+        android:textColor="#ffffff"
+        android:text="Next"
+        android:textAlignment="center"
+        android:layout_marginRight="-160dp"
+        />
+
+</RelativeLayout>
