@@ -44,14 +44,8 @@ public class MainActivity extends AppCompatActivity {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if(Saver.dataFile.exists()){
-                                startActivity(new Intent(MainActivity.this, UserMainAct.class));
-                                Utilities.debugLog("User exist, moving to MainUser");
-
-                            }else{
                                 startActivity(new Intent(MainActivity.this, NewUserAct.class));
                                 Utilities.debugLog("User do not exist, moving to NewUserAct");
-                            }
                         }
                     },1000);
                 }else{
@@ -76,15 +70,14 @@ public class MainActivity extends AppCompatActivity {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if(Saver.dataFile.exists()){
-                                startActivity(new Intent(MainActivity.this, UserMainAct.class));
-                                //overridePendingTransition(R.anim.slide_left_right, R.anim.slide_right_left);
-                                Utilities.debugLog("User exist, moving to MainUser");
-                            }else{
+//                            if(Saver.dataFile.exists()){
+//                                startActivity(new Intent(MainActivity.this, UserMainAct.class));
+//                                //overridePendingTransition(R.anim.slide_left_right, R.anim.slide_right_left);
+//                                Utilities.debugLog("User exist, moving to MainUser");
+//                            }else{
                                 startActivity(new Intent(MainActivity.this, NewUserAct.class));
-                                //overridePendingTransition(R.anim.slide_left_right, R.anim.slide_right_left);
                                 Utilities.debugLog("User do not exist, moving to NewUserAct");
-                            }
+                            //}
                         }
                     },1000);
                 } else {

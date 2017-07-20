@@ -1,5 +1,6 @@
 package com.anduong.finn.yff;
 
+import static com.anduong.finn.yff.Utilities.debugLog;
 import static com.anduong.finn.yff.Utilities.setVisibleAndPop;
 import static com.anduong.finn.yff.Utilities.setVisibleAndFadeIn;
 import static com.anduong.finn.yff.Utilities.setButtonClickColor;
@@ -9,15 +10,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by An Duong on 6/16/2017.
@@ -31,6 +35,8 @@ public class PlanSetterAct extends AppCompatActivity {
     private Context context = this;
     private HorizontalScrollView exerciseListScroll;
     private ProgressBar loadingBar;
+    private EditText planNameView;
+    private HashMap<String, ArrayList<String>> weekMap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,8 +50,10 @@ public class PlanSetterAct extends AppCompatActivity {
         daysBtnParent = (LinearLayout) findViewById(R.id.plan_setter_days_btn_parent);
         exercisesParent = (LinearLayout) findViewById(R.id.plan_setter_exercise_list);
         weekdayParentsList = new ArrayList<>();
+        weekMap = new HashMap<>();
         exerciseListScroll = (HorizontalScrollView) findViewById(R.id.plan_setter_exercise_scroll);
         loadingBar = (ProgressBar) findViewById(R.id.plan_setter_loading_bar);
+        planNameView = (EditText) findViewById(R.id.plan_setter_plan_edit);
 
         loadingBar.setVisibility(View.GONE);
         setupWeekdayParentsListFor(weekdayParentsList);
@@ -67,6 +75,7 @@ public class PlanSetterAct extends AppCompatActivity {
         //for on open, monday is selected and exercise layout for monday=0
         highlightSelectedButton(dayBtnList.get(0),true);
         setupAddButtonFor(weekdayParentsList.get(0));
+        hideFillerIfExerciseParentHasChildren(weekdayParentsList.get(0));
 
         for(final Button selectedDay: dayBtnList){
             selectedDay.setOnClickListener(new View.OnClickListener() {
@@ -74,8 +83,10 @@ public class PlanSetterAct extends AppCompatActivity {
                 public void onClick(View view) {//Onclick switch to appropriate day layout from weekdayParentList
                     for(int buttonIndex = 0; buttonIndex < dayBtnList.size(); buttonIndex++){
                         if(dayBtnList.get(buttonIndex).equals(selectedDay)){
+                            ArrayList<View> al = weekdayParentsList.get(buttonIndex);
+                            debugLog(al.size()+"");
                             highlightSelectedButton(dayBtnList.get(buttonIndex),true);//invert color of selected button
-                            loadingAnimation(buttonIndex);//also remove all current exerciseParentChildren
+                            loadingAnimation(weekdayParentsList.get(buttonIndex));//also remove all current exerciseParentChildren
                             setupAddButtonFor(weekdayParentsList.get(buttonIndex));
                         }else{
                             highlightSelectedButton(dayBtnList.get(buttonIndex),false);
@@ -85,25 +96,22 @@ public class PlanSetterAct extends AppCompatActivity {
             });
         }
     }//scrollable weekday buttons
-    private void loadingAnimation(final int buttonIndex){
+    private void loadingAnimation(final ArrayList<View> exerciseList){
         addBtn.setVisibility(View.GONE);
         loadingBar.setVisibility(View.VISIBLE);
         exercisesParent.removeAllViews();
-
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 loadingBar.setVisibility(View.GONE);
-                ArrayList<View> weekdayParent = weekdayParentsList.get(buttonIndex);
-
-                for(int childIndex = 0; childIndex < weekdayParent.size() ; childIndex++){
-                    exercisesParent.addView(weekdayParent.get(childIndex));
+                for(int childIndex = 0; childIndex < exerciseList.size() ; childIndex++){
+                    exercisesParent.addView(exerciseList.get(childIndex));
                     setVisibleAndFadeIn(context, exercisesParent.getChildAt(childIndex));
                 }//refill exerciseParent
 
                 setVisibleAndFadeIn(context,addBtn);
-                scrollToLastAddedToList(weekdayParent);
+                scrollToLastAddedToList(exerciseList);
             }
         }, 200);
     }//loading animation handling
@@ -117,6 +125,7 @@ public class PlanSetterAct extends AppCompatActivity {
         }
     }// work exclusively with setupDayButtons()
     private void setupAddButtonFor(final ArrayList<View> exerciseList){
+        hideFillerIfExerciseParentHasChildren(exerciseList);
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,7 +135,7 @@ public class PlanSetterAct extends AppCompatActivity {
                 exercisesParent.addView(inflatedLayout);//add to visible view
                 scrollToLastAddedToList(exerciseList);
                 setVisibleAndPop(context,inflatedLayout);
-                hideFillerIfExerciseParentHasChildren(exercisesParent);
+                hideFillerIfExerciseParentHasChildren(exerciseList);
             }
         });
     }
@@ -144,16 +153,26 @@ public class PlanSetterAct extends AppCompatActivity {
             }
         });
     }// work exclusively with setupAddButtonFor
-    private void hideFillerIfExerciseParentHasChildren(LinearLayout parent){
-        if(parent.getChildCount() > 0){
+    private void hideFillerIfExerciseParentHasChildren(ArrayList<View> parent){
+        if(parent.size() > 0){
             fillerBtn.setVisibility(View.GONE);
         }else {
             fillerBtn.setVisibility(View.VISIBLE);
         }
     }//hide filler button
-    private void setupFooterButtons(Button cancel, Button confirm){
+
+    private void setupHashMap(){
+        String[] TABLE_NAMES = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+        for(String weekName : TABLE_NAMES){
+            weekMap.put(weekName, new ArrayList<String>());
+        }
+        for(ArrayList<View> weekdayParent : weekdayParentsList){
+            debugLog(weekdayParent.toString());
+        }
+    }
+    private void setupFooterButtons(Button cancel, final Button confirm){
         setButtonClickColor(cancel,Color.RED);
-        setButtonClickColor(confirm,Color.GREEN);
+        //setButtonClickColor(confirm,Color.GREEN);
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,8 +185,22 @@ public class PlanSetterAct extends AppCompatActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(PlanSetterAct.this, UserMainAct.class));
-                Utilities.debugLog("User confirm plan setter, moving to MainUser");
+
+                String planName = planNameView.getText().toString();
+                ArrayList<String> fileNameList = Saver.getAllFileNameInDataDir();
+                setupHashMap();
+
+                if(!fileNameList.contains(planName) && !planName.equals("") && !planName.equals(null)){
+                    Utilities.setButtonClickColor(confirm,Color.GREEN);
+                    Saver.addPlan(planName,context);
+                    debugLog(Saver.getRowFrom(planName,"Monday"));
+                    startActivity(new Intent(PlanSetterAct.this, PlanSelectAct.class));
+                    Utilities.debugLog("User confirm plan setter, moving to PlanSelectAct");
+                }else{
+                    Utilities.setButtonClickColor(confirm,Color.RED);
+                }
+
+
             }
         });
     }//moving back to UserMain

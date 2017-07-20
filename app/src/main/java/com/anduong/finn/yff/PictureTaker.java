@@ -46,7 +46,7 @@ public class PictureTaker extends AppCompatActivity {
         });
     }
     private void takePictureAndSave(){
-        photoFile = Saver.makePhotoFile();
+        //photoFile = Saver.makePhotoFile();
 
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
@@ -57,7 +57,7 @@ public class PictureTaker extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST) {
             Bitmap photo = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-            imageView.setImageBitmap(Saver.makePhotoVertical(photo, photoFile));
+            //imageView.setImageBitmap(Saver.makePhotoVertical(photo, photoFile));
         }
     }
 
