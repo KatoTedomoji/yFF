@@ -107,7 +107,7 @@ public class Utilities {
     public static int debugLog(String logger){
         return Log.d("appDebug",logger);
     }//generate debug log for testing
-    public static int debugLog(String logger, Exception e){
-        return Log.d("appDebug",logger,e);
+    public static int debugLog( Exception e){
+        return Log.d("appDebug","",e);
     } //generate debug log with exception for testing
 }

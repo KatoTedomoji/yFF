@@ -11,7 +11,7 @@ public class Checker {
         try{
             double dec = Double.parseDouble(num.getText().toString());
         }catch(NumberFormatException e){
-            Utilities.debugLog("User did not enter a valid double",e);
+            Utilities.debugLog(e);
             return false;
         }
         return true;

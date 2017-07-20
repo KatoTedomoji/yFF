@@ -44,7 +44,6 @@ public class UserMainAct extends AppCompatActivity {
     private LinearLayout buttonsParent, exerciseCheckList;
     private ArrayList<Button> weekdayBtnList;
     private ArrayList<LinearLayout> exerciseList;
-    static  List<WeekScheduler> weeksList;
     private HorizontalScrollView weekdayScroll;
     private Chronometer timer;
 
@@ -67,7 +66,6 @@ public class UserMainAct extends AppCompatActivity {
         weekdayScroll = (HorizontalScrollView) findViewById(R.id.schedule_scroll);
         timerText = (TextView) findViewById(R.id.schedule_timer_text);
         timer = (Chronometer) findViewById(R.id.schedule_chronometer);
-        weeksList = Saver.loadSchedulesData(context);
         weekdayBtnList = new ArrayList<Button>();
         timerOn = false;
         planName = (TextView) findViewById(R.id.schedule_plan_name);
@@ -75,7 +73,6 @@ public class UserMainAct extends AppCompatActivity {
 
         host.setup();
         animatingTabWidget();
-        debugLog(host+"");
 
         //tab 1
         createTab("Schedule", R.id.tab1);
@@ -89,7 +86,7 @@ public class UserMainAct extends AppCompatActivity {
         createTab("Setting", R.id.tab3);
         makeTabThreeContent();
 
-        Saver.saveSchedulesData((ArrayList)weeksList,context);
+        //Saver.saveSchedulesData((ArrayList)weeksList,context);
     }
     @Override
     public void onBackPressed() {
@@ -133,13 +130,19 @@ public class UserMainAct extends AppCompatActivity {
         }
 
         timer.setVisibility(View.GONE);
-        planName.setText("Plan");//TODO store plan name somewhere for current session
+
+        setPlanName();
         setupWeekdayButtonsFor(buttonsParent);
         setupResetBtn();
         setupShuffleBtn();
         timerListening();
         scrollTodaysButton();
     }
+    private void setPlanName(){
+        Intent intent = getIntent();
+        String planTxt = intent.getExtras().getString("planTxt");
+        planName.setText(planTxt.toUpperCase());
+    }//set text for planName view
     private void setupWeekdayButtonsFor(LinearLayout parent){
         for(int btnIndex = 0; btnIndex < parent.getChildCount();btnIndex++){
             Button weekdayBtn = (Button) parent.getChildAt(btnIndex);
@@ -317,19 +320,19 @@ public class UserMainAct extends AppCompatActivity {
     }//click timer will start, click again to stop.  Long press to reset, then reset clicked exercise card color.
 
     //start Tab Two Content
-    private void makeTabTwoContent(){
-        UserInfo user = Saver.loadUserData(context);
-        TextView journalName = (TextView) findViewById(R.id.journal_nameView);
-        TextView journalStart = (TextView) findViewById(R.id.journal_startView);
-        TextView journalGoal = (TextView) findViewById(R.id.journal_goalView);
-
-        journalName.setText(user.getName() + "'s Journal");
-        journalStart.setText("Start: " + user.getBeginWeight() + " lbs");
-        journalGoal.setText("Target: " + user.getTargetWeight() + " lbs");
+    private void makeTabTwoContent(){//TODO read from database
+//        UserInfo user = Saver.loadUserData(context);
+//        TextView journalName = (TextView) findViewById(R.id.journal_nameView);
+//        TextView journalStart = (TextView) findViewById(R.id.journal_startView);
+//        TextView journalGoal = (TextView) findViewById(R.id.journal_goalView);
+//
+//        journalName.setText(user.getName() + "'s Journal");
+//        journalStart.setText("Start: " + user.getBeginWeight() + " lbs");
+//        journalGoal.setText("Target: " + user.getTargetWeight() + " lbs");
     }
 
     //start Tab Three Content
     private void makeTabThreeContent(){
-    }
+    }//TODO setting GUI code
 
 }

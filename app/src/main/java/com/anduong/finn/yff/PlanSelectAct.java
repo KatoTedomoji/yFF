@@ -11,6 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -32,10 +35,9 @@ public class PlanSelectAct extends AppCompatActivity {
         planLayout = (LinearLayout) findViewById(R.id.plan_select_plan_list);
         buttonList = new ArrayList<Button>();
 
-        planLayout.addView(createSelectItemView("Buff"));
-        planLayout.addView(createSelectItemView("Lean"));
-
-
+        for(String fileName : Saver.getAllFileNameInDataDir()){
+            planLayout.addView(createSelectItemView(fileName));
+        }
         setupAnimationFor(planLayout, buttonList);
         setButtonListener();
 
@@ -68,12 +70,15 @@ public class PlanSelectAct extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(btn.getText().toString().equalsIgnoreCase("custom")){
+                    if(btn.getText().toString().equalsIgnoreCase("add more")){
                         startActivity(new Intent(PlanSelectAct.this, PlanSetterAct.class));
-                        debugLog("Moving to UserMainACt");
+                        debugLog("Moving to PlanSetterAct");
                     }else{
-                        startActivity(new Intent(PlanSelectAct.this, UserMainAct.class));
                         selectedPlanStr = btn.getText().toString();
+
+                        Intent intent = new Intent(PlanSelectAct.this, UserMainAct.class);
+                        intent.putExtra("planTxt",selectedPlanStr);
+                        startActivity(intent);
                         debugLog("Moving to UserMainACt");
                     }
                 }

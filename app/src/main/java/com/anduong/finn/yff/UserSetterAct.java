@@ -57,8 +57,8 @@ public class UserSetterAct extends AppCompatActivity {
 
                     user = new UserInfo(userNameStr,userCurrWeight);
                     user.setGoalWeight(userGoalWeight);
-                    Saver.saveUserData(user, context);
-                    Saver.saveSchedulesData(new ArrayList<WeekScheduler>(),context);
+                    //Saver.saveUserData(user, context);
+                    //Saver.saveSchedulesData(new ArrayList<WeekScheduler>(),context);
                     Utilities.debugLog("Saving new user");
                     Utilities.debugLog("Saving new schedule");
 
