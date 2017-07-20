@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +36,8 @@ public class PlanSetterAct extends AppCompatActivity {
     private ProgressBar loadingBar;
     private EditText planNameView;
     private HashMap<String, ArrayList<String>> weekMap;
+    private static String[] TABLE_NAMES = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,6 @@ public class PlanSetterAct extends AppCompatActivity {
                     for(int buttonIndex = 0; buttonIndex < dayBtnList.size(); buttonIndex++){
                         if(dayBtnList.get(buttonIndex).equals(selectedDay)){
                             ArrayList<View> al = weekdayParentsList.get(buttonIndex);
-                            debugLog(al.size()+"");
                             highlightSelectedButton(dayBtnList.get(buttonIndex),true);//invert color of selected button
                             loadingAnimation(weekdayParentsList.get(buttonIndex));//also remove all current exerciseParentChildren
                             setupAddButtonFor(weekdayParentsList.get(buttonIndex));
@@ -161,14 +161,25 @@ public class PlanSetterAct extends AppCompatActivity {
         }
     }//hide filler button
 
-    private void setupHashMap(){
-        String[] TABLE_NAMES = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
-        for(String weekName : TABLE_NAMES){
-            weekMap.put(weekName, new ArrayList<String>());
+    private void setupHashMap(String planName){
+        for(int parentIndex = 0; parentIndex < weekdayParentsList.size(); parentIndex ++){
+            for(View child : weekdayParentsList.get(parentIndex)){
+                LinearLayout childLayout = (LinearLayout) child;
+
+                LinearLayout childRepsLayout = (LinearLayout) childLayout.getChildAt(0);
+                EditText childRepsTxt = (EditText) childRepsLayout.getChildAt(0);
+
+                EditText childExerciseTxt = (EditText) childLayout.getChildAt(1);
+
+                LinearLayout childLbsLayout = (LinearLayout) childLayout.getChildAt(2);
+                EditText childLbsTxt = (EditText) childLbsLayout.getChildAt(1);
+
+                String exerciseInfoTxt = childExerciseTxt.getText() + "," + childLbsTxt.getText()+ "," +childRepsTxt.getText() ;
+                Saver.addExerciseTo(planName,TABLE_NAMES[parentIndex], exerciseInfoTxt);
+            }
         }
-        for(ArrayList<View> weekdayParent : weekdayParentsList){
-            debugLog(weekdayParent.toString());
-        }
+
+        //debugLog(weekMap.toString());
     }
     private void setupFooterButtons(Button cancel, final Button confirm){
         setButtonClickColor(cancel,Color.RED);
@@ -177,7 +188,7 @@ public class PlanSetterAct extends AppCompatActivity {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(PlanSetterAct.this, UserMainAct.class));
+                startActivity(new Intent(PlanSetterAct.this, PlanSelectAct.class));
                 Utilities.debugLog("User cancel plan setter, moving to MainUser");
             }
         });
@@ -188,19 +199,18 @@ public class PlanSetterAct extends AppCompatActivity {
 
                 String planName = planNameView.getText().toString();
                 ArrayList<String> fileNameList = Saver.getAllFileNameInDataDir();
-                setupHashMap();
 
                 if(!fileNameList.contains(planName) && !planName.equals("") && !planName.equals(null)){
                     Utilities.setButtonClickColor(confirm,Color.GREEN);
+
                     Saver.addPlan(planName,context);
-                    debugLog(Saver.getRowFrom(planName,"Monday"));
+                    setupHashMap(planName);
+
                     startActivity(new Intent(PlanSetterAct.this, PlanSelectAct.class));
                     Utilities.debugLog("User confirm plan setter, moving to PlanSelectAct");
                 }else{
                     Utilities.setButtonClickColor(confirm,Color.RED);
                 }
-
-
             }
         });
     }//moving back to UserMain

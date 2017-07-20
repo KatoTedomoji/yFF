@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 /**
  * Created by An Duong on 7/19/17.
  */
@@ -76,7 +78,23 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         cursor.close();
         return count;
     }
-    public String getRowString(String tableName){
+    public String getAllTableName(){
+        String tableNames = "";
+        String query = "SELECT name FROM sqlite_master WHERE type='table' AND name!='android_metadata' order by name";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+
+        if (c.moveToFirst()) {
+            while ( !c.isAfterLast() ) {
+                tableNames += c.getString( c.getColumnIndex("name")) + "   |   ";
+                c.moveToNext();
+            }
+        }
+        return tableNames;
+    }
+    public ArrayList<String> getRowString(String tableName){
+        ArrayList<String> rowStringList = new ArrayList<>();
         String rowString = "";
 
         String query = "SELECT * FROM " +tableName;
@@ -85,10 +103,14 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if(cursor.moveToFirst()){
             while(!cursor.isAfterLast()){
-                rowString += cursor.getString(cursor.getColumnIndex(KEY_EXERCISE)) +" ";
+                rowString += cursor.getString(cursor.getColumnIndex(KEY_EXERCISE)) +",";
+                rowString += cursor.getString(cursor.getColumnIndex(KEY_LBS)) +",";
+                rowString += cursor.getString(cursor.getColumnIndex(KEY_REPS));
+
+                rowStringList.add(rowString);
                 cursor.moveToNext();
             }
         }
-        return rowString;
+        return rowStringList;
     }
 }

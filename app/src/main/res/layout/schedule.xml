@@ -178,7 +178,14 @@
                 android:id="@+id/schedule_check_list"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/schedule_loading_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/loading_circle"
+                    />
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>

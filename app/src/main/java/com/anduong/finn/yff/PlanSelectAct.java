@@ -11,9 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -38,6 +35,7 @@ public class PlanSelectAct extends AppCompatActivity {
         for(String fileName : Saver.getAllFileNameInDataDir()){
             planLayout.addView(createSelectItemView(fileName));
         }
+
         setupAnimationFor(planLayout, buttonList);
         setButtonListener();
 
@@ -72,6 +70,7 @@ public class PlanSelectAct extends AppCompatActivity {
                 public void onClick(View view) {
                     if(btn.getText().toString().equalsIgnoreCase("add more")){
                         startActivity(new Intent(PlanSelectAct.this, PlanSetterAct.class));
+                        //Saver.deleteALlFileInDataDir();
                         debugLog("Moving to PlanSetterAct");
                     }else{
                         selectedPlanStr = btn.getText().toString();

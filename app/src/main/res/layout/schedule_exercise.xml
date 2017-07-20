@@ -42,8 +42,10 @@
                         android:textSize="50dp"
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_marginBottom="10dp"/>
                     <TextView
+                        android:id="@+id/exercise_child_lbs"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"

@@ -56,7 +56,6 @@ public class Saver{
         mainDir.mkdir();
         dataDir.mkdir();
     }
-
     public static boolean addPlan(String planName,Context context){
         context1 = context;
         createDirIfNotExist();
@@ -102,30 +101,22 @@ public class Saver{
         DatabaseHandler db = dbMap.get(fileName);
         return db.getTableCount(tableName);
     }
-    public static String getRowFrom(String databaseName, String tableName){
+    public static ArrayList<String> getRowFrom(String databaseName, String tableName){
         DatabaseHandler db = dbMap.get(databaseName);
         return db.getRowString(tableName);
     }
 
-    public static String getAllTableFrom(String dataFileName){
-        dataFileName += ".db";
-
-        return null;
-    }
-    public static String getPlanDataFileRoot(){
-        String out = "";
-        if(dataDir.isDirectory()){
-            out += dataDir.getAbsolutePath()+": ";
-            String[] files = dataDir.list();
-            if(files.length == 0){
-                out += "empty";
-            }else{
-                for(String str: files){
-                    out+= str + " | ";
-                }
-            }
+    public static void deleteALlFileInDataDir(){
+        File[] dataDirFiles = dataDir.listFiles();
+        for(File file : dataDirFiles){
+            file.delete();
         }
-        return out;
+        debugLog("Deleted all files in dataDir");
+    }
+    public static String getAllTableNameFrom(String databaseFileName){
+        DatabaseHandler db = dbMap.get(databaseFileName);
+        Utilities.debugLog(db.getDatabaseName());
+        return db.getAllTableName();
     }
 //    public static File makePhotoFile(){
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("MMddyyyy");

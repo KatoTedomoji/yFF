@@ -40,7 +40,8 @@
         android:hint="Exercise Name"
         android:textSize="30dp"
         android:textStyle="bold"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:inputType="text"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
