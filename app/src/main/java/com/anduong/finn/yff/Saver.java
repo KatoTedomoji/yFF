@@ -56,7 +56,7 @@ public class Saver{
         mainDir.mkdir();
         dataDir.mkdir();
     }
-    public static boolean addPlan(String planName,Context context){
+    public static boolean createDBFile(String planName,Context context){
         context1 = context;
         createDirIfNotExist();
         createDataDB(planName);

@@ -38,7 +38,6 @@ public class PlanSelectAct extends AppCompatActivity {
 
         setupAnimationFor(planLayout, buttonList);
         setButtonListener();
-
     }
 
     @Override

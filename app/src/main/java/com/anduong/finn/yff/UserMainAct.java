@@ -50,6 +50,7 @@ public class UserMainAct extends AppCompatActivity {
     private Chronometer timer;
     private String planTxt = "";
     private HashMap<String, ArrayList<View>> dayExercisesMap;
+    private static String currentDayHighlight;
 
     private static String[] TABLE_NAMES = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
 
@@ -184,7 +185,6 @@ public class UserMainAct extends AppCompatActivity {
                 }
             }
         }
-
     }
     private void setupWeekdayButtonsFor(LinearLayout parent){
         for(int btnIndex = 0; btnIndex < parent.getChildCount();btnIndex++){
@@ -193,7 +193,10 @@ public class UserMainAct extends AppCompatActivity {
             weekdayBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    currentDayHighlight = weekdayBtn.getText().toString();
+
                     setFocusButtonColor((Button) view);
+
                     exerciseCheckList.removeAllViews();
                     for(String name: TABLE_NAMES){
                         if(weekdayBtn.getText().toString().equals(name)){
@@ -254,12 +257,13 @@ public class UserMainAct extends AppCompatActivity {
     private void highlightTodaysBtnIn(ArrayList<Button> btnList){
         for(Button todayBtn : btnList){
             if(todayBtn.getText().toString().equals(getCurrentWeekDay())){
+
                 todayBtn.setBackgroundColor(Color.BLACK);
                 todayBtn.setTextColor(ColorStateList.valueOf(Color.WHITE));
 
-                String todayBtnTxt = todayBtn.getText().toString();
+                currentDayHighlight = todayBtn.getText().toString();
 
-                ArrayList<View> viewList = dayExercisesMap.get(todayBtnTxt);
+                ArrayList<View> viewList = dayExercisesMap.get(currentDayHighlight);
                 for(View exerciseView : viewList){
                     exerciseCheckList.addView(exerciseView);
                 }
@@ -313,7 +317,8 @@ public class UserMainAct extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     ColorDrawable backgroundColor = (ColorDrawable) view.getBackground();
-                    if(timerOn){
+                    if(timerOn && timerStarted && currentDayHighlight.equals(getCurrentWeekDay())){
+                        debugLog(currentDayHighlight + getCurrentWeekDay());
                         if(backgroundColor.getColor() == Color.WHITE){
                             view.setBackgroundColor(Color.parseColor("#51ef9d"));
                         }else{
@@ -341,7 +346,6 @@ public class UserMainAct extends AppCompatActivity {
         timerText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //mainHeaderLayout.setVisibility(View.GONE);
                 if(timerStarted){
                     timerText.setTextColor(Color.RED);
                     timerText.setText("Workout Stopped");
@@ -395,14 +399,16 @@ public class UserMainAct extends AppCompatActivity {
 
     //start Tab Two Content
     private void makeTabTwoContent(){//TODO read from database
-//        UserInfo user = Saver.loadUserData(context);
-//        TextView journalName = (TextView) findViewById(R.id.journal_nameView);
-//        TextView journalStart = (TextView) findViewById(R.id.journal_startView);
-//        TextView journalGoal = (TextView) findViewById(R.id.journal_goalView);
-//
-//        journalName.setText(user.getName() + "'s Journal");
-//        journalStart.setText("Start: " + user.getBeginWeight() + " lbs");
-//        journalGoal.setText("Target: " + user.getTargetWeight() + " lbs");
+        UserInfoDBHandler userDB = new UserInfoDBHandler(context);
+        ArrayList<String> userInfo = userDB.getUserInfo();
+
+        TextView journalName = (TextView) findViewById(R.id.journal_nameView);
+        TextView journalStart = (TextView) findViewById(R.id.journal_startView);
+        TextView journalGoal = (TextView) findViewById(R.id.journal_goalView);
+
+        journalName.setText(userInfo.get(0) + "'s Journal");
+        journalStart.setText("Started at " + userInfo.get(1) + " lbs, ");
+        journalGoal.setText("on " + userInfo.get(2));
     }
 
     //start Tab Three Content

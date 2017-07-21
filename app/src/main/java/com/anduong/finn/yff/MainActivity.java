@@ -1,5 +1,8 @@
 package com.anduong.finn.yff;
 
+import static com.anduong.finn.yff.Utilities.debugLog;
+import static com.anduong.finn.yff.Utilities.setVisibleAndPop;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -40,22 +43,27 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 loadingBar.setVisibility(View.GONE);
                 if(permissionGranted()){
-                    Utilities.setVisibleAndPop(context,accessYes);
+                    setVisibleAndPop(context,accessYes);
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            UserInfoDBHandler userDB =  new UserInfoDBHandler(context);
+                            if(!userDB.getUserInfo().isEmpty()){
+                                startActivity(new Intent(MainActivity.this, PlanSelectAct.class));
+                                debugLog("User exist, moving to PlanSelect"); //TODO moving to main later if plan started
+                            }else{
                                 startActivity(new Intent(MainActivity.this, NewUserAct.class));
-                                Utilities.debugLog("User do not exist, moving to NewUserAct");
+                                debugLog("User dont exist, moving to NewUserAct"); //TODO moving to main later if plan started
+                            }
                         }
                     },1000);
                 }else{
                     Utilities.setVisibleAndPop(context,accessNo);
                     ActivityCompat.requestPermissions(MainActivity.this, permissions,1);
-                    Utilities.debugLog("No permission, cant proceed");
+                    debugLog("No permission, cant proceed");
                 }
             }
         }, 1500);
-
     }
 
     @Override
@@ -67,19 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     accessNo.setVisibility(View.INVISIBLE);
                     permissionView.setText("Access Granted");
                     Utilities.setVisibleAndPop(context,accessYes);
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-//                            if(Saver.dataFile.exists()){
-//                                startActivity(new Intent(MainActivity.this, UserMainAct.class));
-//                                //overridePendingTransition(R.anim.slide_left_right, R.anim.slide_right_left);
-//                                Utilities.debugLog("User exist, moving to MainUser");
-//                            }else{
-                                startActivity(new Intent(MainActivity.this, NewUserAct.class));
-                                Utilities.debugLog("User do not exist, moving to NewUserAct");
-                            //}
-                        }
-                    },1000);
+
                 } else {
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }

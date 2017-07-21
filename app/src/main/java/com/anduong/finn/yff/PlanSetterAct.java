@@ -203,7 +203,7 @@ public class PlanSetterAct extends AppCompatActivity {
                 if(!fileNameList.contains(planName) && !planName.equals("") && !planName.equals(null)){
                     Utilities.setButtonClickColor(confirm,Color.GREEN);
 
-                    Saver.addPlan(planName,context);
+                    Saver.createDBFile(planName,context);
                     setupHashMap(planName);
 
                     startActivity(new Intent(PlanSetterAct.this, PlanSelectAct.class));

@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +56,9 @@ public class Utilities {
     public static String getCurrentWeekDay(){
         Date date = Calendar.getInstance().getTime();
         return new SimpleDateFormat("EEEE",Locale.ENGLISH).format(date.getTime());
+    }
+    public static String getCurrentDate(){
+        return new SimpleDateFormat("MM-dd-yyyy").format(new Date());
     }
     public static void setVisibleAndPop(Context context, View view){
         Animation popAnimate = AnimationUtils.loadAnimation(context, R.anim.pop_animation);

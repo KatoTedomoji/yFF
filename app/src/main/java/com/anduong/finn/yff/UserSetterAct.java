@@ -1,5 +1,8 @@
 package com.anduong.finn.yff;
 
+import static com.anduong.finn.yff.Utilities.debugLog;
+import static com.anduong.finn.yff.Utilities.setButtonClickColor;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,8 +12,6 @@ import android.widget.Button;
 import android.view.View.OnClickListener;
 import android.content.Context;
 import android.widget.EditText;
-
-import java.util.ArrayList;
 
 /**
  * Created by An Duong on 6/11/2017.
@@ -47,15 +48,26 @@ public class UserSetterAct extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(Checker.hasText(userName) && Checker.isNum(currWeight)){
-                    Utilities.setButtonClickColor(nextBtn,Color.GREEN);
+                    setButtonClickColor(nextBtn,Color.GREEN);
                     userCurrWeight = Double.parseDouble(currWeight.getText().toString());
                     userNameStr = userName.getText().toString();
-                    Utilities.debugLog("Recording user info");
+                    debugLog("Recording user info");
+
+                    Saver.createDBFile("userDB",context);
+                    UserInfoDBHandler userDB = new UserInfoDBHandler(context);
+                    //userDB.deleteTable("user");
+
+                    userDB.setUser(userNameStr, userCurrWeight);
+                    debugLog(userDB.getAllTableName().toString());
+                    debugLog(userDB.getUserInfo().toString());
+
+                    userDB.startPlan(true);
+                    debugLog(userDB.getUserInfo().toString());
 
                     startActivity(new Intent(UserSetterAct.this, PlanSelectAct.class));
-                    Utilities.debugLog("Moving to PlanSelectAct");
+                    debugLog("Moving to PlanSelectAct");
                 }else{
-                    Utilities.setButtonClickColor(nextBtn,Color.RED);
+                    setButtonClickColor(nextBtn,Color.RED);
                 }
             }
         });
