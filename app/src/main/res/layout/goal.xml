@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/button_border"
+    android:layout_margin="5dp">
+
+    <TextView
+        android:id="@+id/goal_plan_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Plan Name"
+        android:textAlignment="center"
+        android:layout_marginTop="43dp"
+        android:textSize="30dp"
+        android:textColor="@color/black"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lets set some goal."
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"/>
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Plan Duration: "
+                android:textSize="25dp"
+                android:textColor="@color/black"/>
+            <EditText
+                android:id="@+id/goal_week_num_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="# of week(s)"
+                android:inputType="number"
+                android:maxLines="1"
+                android:maxLength="2"
+                android:ems="6"
+                android:textAlignment="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Goal Weight:   "
+                android:textSize="25dp"
+                android:textColor="@color/black" />
+            <EditText
+                android:id="@+id/goal_lbs_num_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:hint="# of lbs"
+                android:ems="6"
+                android:textAlignment="center"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/goal_back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:layout_weight="1"
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:layout_marginRight="1dp"/>
+        <Button
+            android:id="@+id/goal_confirm_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirm"
+            android:layout_weight="1"
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:layout_marginLeft="1dp"/>
+    </LinearLayout>
+</LinearLayout>

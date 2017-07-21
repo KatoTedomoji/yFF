@@ -11,7 +11,7 @@
         android:id="@+id/userTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lets record some data"
+        android:text="Lets record some data."
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="30dp"
@@ -23,8 +23,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp">
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
 
         <EditText
             android:id="@+id/nameTxt"
@@ -48,18 +48,6 @@
             android:textColor="#000000"
             android:inputType="numberDecimal" />
 
-        <EditText
-            android:id="@+id/goalWeightTxt"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/goalWeight"
-            android:layout_alignBottom="@+id/goalWeight"
-            android:textAlignment="center"
-            android:layout_alignStart="@+id/currWeightTxt"
-            android:textColor="#000000"
-            android:ems="10"
-            android:inputType="numberDecimal" />
-
         <TextView
             android:id="@+id/currWeight"
             android:layout_width="wrap_content"
@@ -80,16 +68,6 @@
             android:textSize="25dp"
             android:layout_marginTop="58dp" />
 
-        <TextView
-            android:id="@+id/goalWeight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="47dp"
-            android:text="Target Weight :"
-            android:textColor="@android:color/black"
-            android:textSize="25dp"
-            android:layout_below="@+id/currWeightTxt"
-            android:layout_alignStart="@+id/currWeight" />
     </RelativeLayout>
 
     <Button

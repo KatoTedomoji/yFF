@@ -40,6 +40,15 @@ public class PlanSelectAct extends AppCompatActivity {
         setButtonListener();
 
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory( Intent.CATEGORY_HOME );
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
+    }//disable going back
+
     private View createSelectItemView(String title){
         View inflatedLayout = getLayoutInflater().inflate(R.layout.plan_select_item,null);
         Button b = inflatedLayout.findViewById(R.id.plan_select_btn);
@@ -75,10 +84,10 @@ public class PlanSelectAct extends AppCompatActivity {
                     }else{
                         selectedPlanStr = btn.getText().toString();
 
-                        Intent intent = new Intent(PlanSelectAct.this, UserMainAct.class);
+                        Intent intent = new Intent(PlanSelectAct.this, GoalAct.class);
                         intent.putExtra("planTxt",selectedPlanStr);
                         startActivity(intent);
-                        debugLog("Moving to UserMainACt");
+                        debugLog("Moving to GoalAct");
                     }
                 }
             });

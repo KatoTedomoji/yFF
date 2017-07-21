@@ -144,29 +144,27 @@ public class UserMainAct extends AppCompatActivity {
         setupExerciseListForEachDayBtn();
         highlightTodaysBtnIn(weekdayBtnList);
         setupResetBtn();
-        //setupShuffleBtn();
         timerListening();
         scrollTodaysButton();
     }//set text for planName view
+
     private void loadingAnimation(final ArrayList<View> exerciseList){
         exerciseCheckList.removeAllViews();
         loadingView.setVisibility(View.VISIBLE);
-        final Handler handler = new Handler();
+    final Handler handler = new Handler();
 
         handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loadingView.setVisibility(View.GONE);
-                for(int childIndex = 0; childIndex < exerciseList.size() ; childIndex++){
-                    exerciseCheckList.addView(exerciseList.get(childIndex));
-                    setVisibleAndFadeIn(context, exerciseCheckList.getChildAt(childIndex));
-                }//refill exerciseParent
+        @Override
+        public void run() {
+            loadingView.setVisibility(View.GONE);
+            for(int childIndex = 0; childIndex < exerciseList.size() ; childIndex++){
+                exerciseCheckList.addView(exerciseList.get(childIndex));
+                setVisibleAndFadeIn(context, exerciseCheckList.getChildAt(childIndex));
+            }//refill exerciseParent
+        }
+    }, 5000);
+}//TODO loading animation for mainuseract
 
-                //setVisibleAndFadeIn(context,addBtn);
-                //scrollToLastAddedToList(exerciseList);
-            }
-        }, 200);
-    }//loading animation handling
     private void setupExerciseListForEachDayBtn(){
         for(String name: TABLE_NAMES){
             dayExercisesMap.put(name, new ArrayList<View>());
@@ -179,8 +177,10 @@ public class UserMainAct extends AppCompatActivity {
                 String dayBtnText = dayBtn.getText().toString();
                 if(dayBtnText.equalsIgnoreCase(name)){
                     ArrayList<View> dayViewList = dayExercisesMap.get(name);
-                    for(String rowString : db.getRowString(name))
-                    addExerciseToCheckList(rowString,dayViewList);
+                    for(String rowString : db.getRowString(name)) {
+                        addExerciseToCheckList(rowString, dayViewList);
+                    }
+                    //loadingAnimation(dayViewList);
                 }
             }
         }
@@ -198,10 +198,10 @@ public class UserMainAct extends AppCompatActivity {
                     for(String name: TABLE_NAMES){
                         if(weekdayBtn.getText().toString().equals(name)){
                             ArrayList<View> viewList = dayExercisesMap.get(name);
-                            debugLog(viewList.size() +"asd asd a dawd ");
                             for(View exerciseView : viewList){
                                 exerciseCheckList.addView(exerciseView);
                             }
+                            setupShuffleBtnFor(exerciseCheckList);
                         }
                     }
 
@@ -219,37 +219,38 @@ public class UserMainAct extends AppCompatActivity {
             }
         });
     }//TODO add confirm box with user, if yes move to PlanSelect else do nothing
-//    private void setupShuffleBtn(){
-//        setButtonTextClickColor(shufflePlanBtn,Color.GREEN);
-//        for(int childIndex = 0; childIndex < exerciseCheckList.getChildCount(); childIndex++){
-//            exerciseList.add((LinearLayout) exerciseCheckList.getChildAt(childIndex));
-//        }
-//
-//        shufflePlanBtn.setOnClickListener(new View.OnClickListener() {//TODO refactor clean up
-//            @Override
-//            public void onClick(View view) {
-//                debugLog("shuffling");
-//                shufflePlanBtn.setEnabled(false);
-//
-//                for(LinearLayout child : exerciseList){
-//                    setInvisibleAndSlideDownAnimation(context,child);
-//                }
-//                final Handler handler = new Handler();
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        exerciseCheckList.removeAllViews();
-//                        Collections.shuffle(exerciseList);
-//                        for(LinearLayout child : exerciseList){
-//                            exerciseCheckList.addView(child);
-//                            setVisibleAndSlideUpAnimation(context,child);
-//                        }
-//                        shufflePlanBtn.setEnabled(true);
-//                    }
-//                },500);
-//            }
-//        });
-//    }//click will animate and shuffle exerciseCheckList children order
+    private void setupShuffleBtnFor(final LinearLayout parent){
+        exerciseList.clear();
+        setButtonTextClickColor(shufflePlanBtn,Color.GREEN);
+        for(int childIndex = 0; childIndex < parent.getChildCount(); childIndex++){
+            exerciseList.add((LinearLayout) parent.getChildAt(childIndex));
+        }
+
+        shufflePlanBtn.setOnClickListener(new View.OnClickListener() {//TODO refactor clean up
+            @Override
+            public void onClick(View view) {
+                debugLog("shuffling");
+                shufflePlanBtn.setEnabled(false);
+
+                for(LinearLayout child : exerciseList){
+                    setInvisibleAndSlideDownAnimation(context,child);
+                }
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        parent.removeAllViews();
+                        Collections.shuffle(exerciseList);
+                        for(LinearLayout child : exerciseList){
+                            parent.addView(child);
+                            setVisibleAndSlideUpAnimation(context,child);
+                        }
+                        shufflePlanBtn.setEnabled(true);
+                    }
+                },500);
+            }
+        });
+    }//click will animate and shuffle exerciseCheckList children order
     private void highlightTodaysBtnIn(ArrayList<Button> btnList){
         for(Button todayBtn : btnList){
             if(todayBtn.getText().toString().equals(getCurrentWeekDay())){
@@ -322,7 +323,7 @@ public class UserMainAct extends AppCompatActivity {
                 }
             });
         }
-    }//TODO delete later
+    }
     private void setFocusButtonColor(Button btn){
         for(Button selectedBtn : weekdayBtnList){
             if(selectedBtn.equals(btn)){

@@ -108,6 +108,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 rowString += cursor.getString(cursor.getColumnIndex(KEY_REPS));
 
                 rowStringList.add(rowString);
+
+                rowString = "";
                 cursor.moveToNext();
             }
         }

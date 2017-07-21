@@ -20,7 +20,7 @@ public class UserSetterAct extends AppCompatActivity {
     private Button nextBtn;
     private double userCurrWeight, userGoalWeight;
     private String userNameStr;
-    private EditText userName,currWeight,goalWeight;
+    private EditText userName,currWeight;
     private final Context context = this;
     private UserInfo user;
 
@@ -31,7 +31,6 @@ public class UserSetterAct extends AppCompatActivity {
 
         userName = (EditText) (findViewById(R.id.nameTxt));
         currWeight = (EditText) (findViewById(R.id.currWeightTxt));
-        goalWeight = (EditText) (findViewById(R.id.goalWeightTxt));
         nextBtn = (Button) findViewById(R.id.userSetterNextButton);
 
         nextBtn.animate().setDuration(1000);
@@ -39,7 +38,6 @@ public class UserSetterAct extends AppCompatActivity {
 
         userName.setHint("Enter your name");
         currWeight.setHint("Enter number");
-        goalWeight.setHint("Enter number");
 
         listenToNextBtn();
 
@@ -48,19 +46,11 @@ public class UserSetterAct extends AppCompatActivity {
         nextBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Checker.hasText(userName) && Checker.isNum(currWeight) && Checker.isNum(goalWeight)){
+                if(Checker.hasText(userName) && Checker.isNum(currWeight)){
                     Utilities.setButtonClickColor(nextBtn,Color.GREEN);
                     userCurrWeight = Double.parseDouble(currWeight.getText().toString());
-                    userGoalWeight = Double.parseDouble(goalWeight.getText().toString());
                     userNameStr = userName.getText().toString();
                     Utilities.debugLog("Recording user info");
-
-                    user = new UserInfo(userNameStr,userCurrWeight);
-                    user.setGoalWeight(userGoalWeight);
-                    //Saver.saveUserData(user, context);
-                    //Saver.saveSchedulesData(new ArrayList<WeekScheduler>(),context);
-                    Utilities.debugLog("Saving new user");
-                    Utilities.debugLog("Saving new schedule");
 
                     startActivity(new Intent(UserSetterAct.this, PlanSelectAct.class));
                     Utilities.debugLog("Moving to PlanSelectAct");

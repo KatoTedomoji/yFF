@@ -31,6 +31,13 @@
 
         </activity>
         <activity
+            android:name="com.anduong.finn.yff.UserSetterAct"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
             android:name="com.anduong.finn.yff.PlanSelectAct"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"
@@ -41,14 +48,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.anduong.finn.yff.UserSetterAct"
+            android:name="com.anduong.finn.yff.PlanSetterAct"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
 
         </activity>
         <activity
-            android:name="com.anduong.finn.yff.PlanSetterAct"
+            android:name="com.anduong.finn.yff.GoalAct"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
