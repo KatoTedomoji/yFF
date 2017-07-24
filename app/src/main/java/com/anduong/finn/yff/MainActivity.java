@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             if(Saver.dataDir.listFiles().length != 0){
                                 UserInfoDBHandler userDB =  new UserInfoDBHandler(context);
-                                if(!userDB.getUserInfo().isEmpty()){
+                                if(userDB.getTableCount() > 0){
                                     if(userDB.planHasStarted()){
                                         startActivity(new Intent(MainActivity.this, UserMainAct.class));
                                         debugLog("User exist and plan started, moving to UserMainAct");

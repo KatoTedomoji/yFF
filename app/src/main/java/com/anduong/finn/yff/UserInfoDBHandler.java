@@ -29,9 +29,10 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
     private static final String KEY_EXERCISE_COMPLETED = "exercise_completed";
     private static final String KEY_EXERCISE_MISSED = "exercise_missed";
     private static final String KEY_REPS_COMPLETED = "reps_completed";
+    private static final String KEY_PR = "personal_records";
 
     private static final String[] KEYS = {KEY_ID, KEY_USER, KEY_START_DATE, KEY_CURRENT_PLAN, KEY_CURRENT_PLAN_DURATION, KEY_START_WEIGHT,
-                                            KEY_EXERCISE_COMPLETED, KEY_EXERCISE_MISSED, KEY_REPS_COMPLETED};
+                                            KEY_EXERCISE_COMPLETED, KEY_EXERCISE_MISSED, KEY_REPS_COMPLETED, KEY_PR};
 
     private static String userName;
     private static double userCurrentWeight;
@@ -65,6 +66,7 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
         values.put(KEY_EXERCISE_COMPLETED, 0);
         values.put(KEY_EXERCISE_MISSED, 0);
         values.put(KEY_REPS_COMPLETED, 0);
+        values.put(KEY_PR, "");
 
         db.insert(TABLE_NAME, null, values);
         db.close();
@@ -80,7 +82,8 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
                 KEY_START_WEIGHT                +" NUMERIC,"+
                 KEY_EXERCISE_COMPLETED          +" NUMERIC,"+
                 KEY_EXERCISE_MISSED             +" NUMERIC,"+
-                KEY_REPS_COMPLETED              +" NUMERIC"+")";
+                KEY_REPS_COMPLETED              +" NUMERIC,"+
+                KEY_PR                          +" TEXT)";
 
         db.execSQL(CREATE_WEEKDAY_TABLE);
     }
@@ -176,5 +179,18 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
             rowStringList.add(cursor.getString(cursor.getColumnIndex(KEY)));
         }
         return rowStringList;
+    }
+
+    public int getTableCount(){
+        int count = 0;
+
+        String countQuery = "SELECT * FROM " + TABLE_NAME;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery,null);
+
+        count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 }

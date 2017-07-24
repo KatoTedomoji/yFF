@@ -59,6 +59,27 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Current Weight: "
+                android:textSize="25dp"
+                android:textColor="@color/black"/>
+            <EditText
+                android:id="@+id/goal_current_lbs_num_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="# of lbs"
+                android:inputType="number"
+                android:maxLines="1"
+                android:maxLength="6"
+                android:ems="5"
+                android:textAlignment="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Goal Weight:   "
                 android:textSize="25dp"
                 android:textColor="@color/black" />
@@ -69,7 +90,9 @@
                 android:inputType="numberDecimal"
                 android:hint="# of lbs"
                 android:ems="6"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:maxLength="6"
+                android:maxLines="1"/>
         </LinearLayout>
     </LinearLayout>
     <LinearLayout

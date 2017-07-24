@@ -3,6 +3,7 @@ package com.anduong.finn.yff;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;

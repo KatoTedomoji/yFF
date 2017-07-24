@@ -117,12 +117,12 @@ public class Saver{
         return db.getRowString(tableName);
     }
 
-    public static void deleteALlFileInDataDir(){
-        File[] dataDirFiles = dataDir.listFiles();
-        for(File file : dataDirFiles){
+    public static void deleteAllFiles(){
+        File[] planDirFiles = dataDir.listFiles();
+        for(File file : planDirFiles){
             file.delete();
         }
-        debugLog("Deleted all files in dataDir");
+        debugLog("Deleted all files");
     }
     public static ArrayList<String> getAllTableNameFrom(String databaseFileName){
         DatabaseHandler db = dbMap.get(databaseFileName);

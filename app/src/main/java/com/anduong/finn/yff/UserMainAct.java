@@ -51,14 +51,18 @@ public class UserMainAct extends AppCompatActivity {
     private String planTxt = "";
     private HashMap<String, ArrayList<View>> dayExercisesMap;
     private static String currentDayHighlight;
-
     private static String[] TABLE_NAMES = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
-
-    private int timerStopAt;
     private boolean timerOn;
 
     static boolean timerStarted = false;
     static long timeStopped = 0;
+
+    private UserInfoPlanDBHandler planDB = new UserInfoPlanDBHandler(context);
+    private UserInfoDBHandler userDB = new UserInfoDBHandler(context);
+
+    private ArrayList<Integer> viewID = new ArrayList<>();
+    private static String[] map_content;
+    private static String dbPlanString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +84,6 @@ public class UserMainAct extends AppCompatActivity {
         exerciseList = new ArrayList<>();
         dayExercisesMap = new HashMap<>();
 
-        Intent intent = getIntent();
-
         host.setup();
         animatingTabWidget();
 
@@ -97,7 +99,6 @@ public class UserMainAct extends AppCompatActivity {
         createTab("Setting", R.id.tab3);
         makeTabThreeContent();
 
-        //Saver.saveSchedulesData((ArrayList)weeksList,context);
     }
     @Override
     public void onBackPressed() {
@@ -135,8 +136,10 @@ public class UserMainAct extends AppCompatActivity {
 
     //start Tab One Content
     private void makeTabOneContent(){
-        UserInfoDBHandler userDB = new UserInfoDBHandler(context);
-        String[] temp = userDB.get("current_plan_name").split("_");
+
+        dbPlanString = userDB.get("current_plan_name");
+
+        String[] temp = dbPlanString.split("_");
         planTxt = temp[0];
 
         weeksLeft.setText(userDB.get("current_plan_duration"));
@@ -150,6 +153,9 @@ public class UserMainAct extends AppCompatActivity {
         setupResetBtn();
         timerListening();
         scrollTodaysButton();
+        setUpExerciseViewColor(getWorkoutMap());
+
+        planDB.updateExerciseMapAt(dbPlanString, 1, getWorkoutMap());
     }//set text for planName view
 
     private void loadingAnimation(final ArrayList<View> exerciseList){
@@ -197,6 +203,16 @@ public class UserMainAct extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     currentDayHighlight = weekdayBtn.getText().toString();
+
+                    if(currentDayHighlight.equalsIgnoreCase(getCurrentWeekDay())){
+                        timerText.setEnabled(true);
+                        timerText.setText("Click to start workout.");
+                    }else{
+                        timerText.setEnabled(false);
+                        timerText.setText("You cannot time travel.");
+                        timer.setVisibility(View.GONE);
+                    }
+
                     setFocusButtonColor((Button) view);
 
                     exerciseCheckList.removeAllViews();
@@ -303,7 +319,6 @@ public class UserMainAct extends AppCompatActivity {
         exerciseRep = (TextView) inflatedView.findViewById(R.id.exercise_child_rep);
 
         if(exerciseInfo.equals("") || exerciseInfo.equals(null)){
-
         }else{
             String[] exerciseInfoList = exerciseInfo.split(",");
 
@@ -320,15 +335,50 @@ public class UserMainAct extends AppCompatActivity {
                 public void onClick(View view) {
                     ColorDrawable backgroundColor = (ColorDrawable) view.getBackground();
                     if(timerOn && timerStarted && currentDayHighlight.equals(getCurrentWeekDay())){
-                        debugLog(currentDayHighlight + getCurrentWeekDay());
                         if(backgroundColor.getColor() == Color.WHITE){
                             view.setBackgroundColor(Color.parseColor("#51ef9d"));
+                            map_content[view.getId()] = "1";
+                            planDB.updateExerciseMapAt(dbPlanString,1,arrayToString(map_content));
                         }else{
                             view.setBackgroundColor(Color.WHITE);
+                            map_content[view.getId()] = "0";
+                            planDB.updateExerciseMapAt(dbPlanString,1,arrayToString(map_content));
                         }
+                        debugLog(planDB.getRowString(dbPlanString).toString());
                     }
                 }
             });
+        }
+    }
+    private void setUpExerciseViewColor(String map){
+        map = map.replace("[","");
+        map = map.replace("]","");
+
+        map_content = map.split(",");
+        ArrayList<View> views = new ArrayList<>();
+
+        for(String name : TABLE_NAMES){
+            for(View view : dayExercisesMap.get(name)){
+                View child = ((LinearLayout)view).getChildAt(0);
+                View childChild = ((LinearLayout)child).getChildAt(0);
+                views.add(childChild);
+            }
+        }
+
+        for(View view : views){
+            int id = View.generateViewId()-1;
+            view.setId(id);
+            viewID.add(id);
+        }
+
+        for(int i = 0; i < views.size(); i++){
+            if(map_content[i].equalsIgnoreCase("?")){
+                views.get(i).setBackgroundColor(Color.WHITE);
+            }else if(map_content[i].equalsIgnoreCase("1")){
+                views.get(i).setBackgroundColor(Color.GREEN);
+            }else if(map_content[i].equalsIgnoreCase("0")){
+                views.get(i).setBackgroundColor(Color.RED);
+            }
         }
     }
     private void setFocusButtonColor(Button btn){
@@ -397,7 +447,22 @@ public class UserMainAct extends AppCompatActivity {
             }
         });
     }//click timer will start, click again to stop.  Long press to reset, then reset clicked exercise card color.
-
+    private String getWorkoutMap(){
+        String map = "[";
+        for(String a : TABLE_NAMES){
+            for(View v : dayExercisesMap.get(a)){
+                map += "?,";
+            }
+        }
+        return map + "]";
+    }
+    private String arrayToString(String[] arr){
+        String output = "[";
+        for(String str : arr){
+            output += str + ",";
+        }
+        return output+"]";
+    }
     //start Tab Two Content
     private void makeTabTwoContent(){//TODO read from database
         UserInfoDBHandler userDB = new UserInfoDBHandler(context);
@@ -407,8 +472,8 @@ public class UserMainAct extends AppCompatActivity {
         TextView journalStart = (TextView) findViewById(R.id.journal_startView);
         TextView journalGoal = (TextView) findViewById(R.id.journal_goalView);
 
-        journalName.setText(userInfo.get(0) + "'s Journal");
-        journalStart.setText("Started at " + userInfo.get(1) + " lbs, ");
+        journalName.setText(userInfo.get(1) + "'s Journal");
+        journalStart.setText("Started at " + userInfo.get(5) + " lbs, ");
         journalGoal.setText("on " + userInfo.get(2));
     }
 

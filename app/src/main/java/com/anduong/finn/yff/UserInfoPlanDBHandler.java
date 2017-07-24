@@ -23,9 +23,8 @@ public class UserInfoPlanDBHandler extends UserInfoDBHandler{
     private static final String KEY_EXERCISE_MAP = "exercise_map";
     private static final String KEY_CURRENT_WEIGHT = "current_weight";
     private static final String KEY_GOAL_WEIGHT = "goal_weight";
-    private static final String KEY_PERSONAL_RECORD = "personal_record";
     private static final String KEY_COMMENT = "comment";
-    private static final String[] KEY_LIST = {KEY_ID ,KEY_DATE, KEY_EXERCISE_MAP,KEY_CURRENT_WEIGHT, KEY_GOAL_WEIGHT,KEY_PERSONAL_RECORD,KEY_COMMENT};
+    private static final String[] KEY_LIST = {KEY_ID ,KEY_DATE, KEY_EXERCISE_MAP,KEY_CURRENT_WEIGHT, KEY_GOAL_WEIGHT,KEY_COMMENT};
 
     public UserInfoPlanDBHandler(Context context) {
         super(context);
@@ -44,7 +43,6 @@ public class UserInfoPlanDBHandler extends UserInfoDBHandler{
         values.put(KEY_EXERCISE_MAP, map);
         values.put(KEY_CURRENT_WEIGHT, 0);
         values.put(KEY_GOAL_WEIGHT, goalWeight);
-        values.put(KEY_PERSONAL_RECORD, "none");
         values.put(KEY_COMMENT, "none");
 
         db.insert(planName, null, values);
@@ -90,12 +88,6 @@ public class UserInfoPlanDBHandler extends UserInfoDBHandler{
         String query = "UPDATE " + TABLE_NAME + " SET " + KEY_CURRENT_WEIGHT + "='" + currentWeight+"' WHERE id = " + ROW_ID;
         db.execSQL(query);
     }
-    public void updatePersonalRecordAt(String TABLE_NAME, int ROW_ID, String pr){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + TABLE_NAME + " SET " + KEY_PERSONAL_RECORD + "='" + pr+"' WHERE id = " + ROW_ID;
-        db.execSQL(query);
-
-    }
     public void updateCommentAt(String TABLE_NAME, int ROW_ID, String comment){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + TABLE_NAME + " SET " + KEY_COMMENT + "='" + comment+"' WHERE id = " + ROW_ID;
@@ -133,7 +125,6 @@ public class UserInfoPlanDBHandler extends UserInfoDBHandler{
                 KEY_EXERCISE_MAP            +" TEXT,"+ //1 = complete, 0 = missed, ? = not yet reached
                 KEY_CURRENT_WEIGHT          +" NUMERIC,"+
                 KEY_GOAL_WEIGHT             +" NUMERIC,"+
-                KEY_PERSONAL_RECORD         +" TEXT,"+
                 KEY_COMMENT                 +" TEXT"+
                 ")";
         SQLiteDatabase db = this.getWritableDatabase();

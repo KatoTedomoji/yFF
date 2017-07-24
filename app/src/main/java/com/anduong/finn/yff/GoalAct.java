@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class GoalAct extends AppCompatActivity{
     private Button backBtn, confirmBtn;
-    private EditText lbsEdit, weeksNumEdit;
+    private EditText lbsEdit,currLbsEdit ,weeksNumEdit;
     private TextView planNameView;
     private static String planNameTxt;
     private Context context = this;
@@ -38,6 +38,7 @@ public class GoalAct extends AppCompatActivity{
         confirmBtn = (Button) findViewById(R.id.goal_confirm_btn);
         lbsEdit = (EditText) findViewById(R.id.goal_lbs_num_edit);
         weeksNumEdit = (EditText) findViewById(R.id.goal_week_num_edit);
+        currLbsEdit = (EditText) findViewById(R.id.goal_current_lbs_num_edit);
 
         setPlanNameViewTxt();
         setOnclickFor(backBtn,confirmBtn);
@@ -75,6 +76,7 @@ public class GoalAct extends AppCompatActivity{
         String planName = planNameTxt + "_" + getReformatCurrentDate();
         double goalLbs = Double.parseDouble(lbsEdit.getText().toString());
         int duration = Integer.parseInt(weeksNumEdit.getText().toString());
+        String currentLbs = currLbsEdit.getText().toString();
 
         UserInfoPlanDBHandler userPlanDB = new UserInfoPlanDBHandler(context);
         DatabaseHandler db = new DatabaseHandler(context, planNameTxt);
@@ -89,6 +91,7 @@ public class GoalAct extends AppCompatActivity{
         map += "]";
 
         userPlanDB.startNewPlan(planName,goalLbs,map);
+        userPlanDB.updateCurrentWeightAt(planName,1,currentLbs);
 
         userDB.updateCurrentPlan(planName);
         userDB.updateCurrentPlanDuration(duration);

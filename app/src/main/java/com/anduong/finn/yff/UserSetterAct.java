@@ -60,7 +60,7 @@ public class UserSetterAct extends AppCompatActivity {
                     UserInfoDBHandler userDB = new UserInfoDBHandler(context);
 
                     debugLog("Clearing all info");
-                    Saver.deleteALlFileInDataDir();
+                    Saver.deleteAllFiles();
                     userDB.setUser(userNameStr, userCurrWeight);
 
                     startActivity(new Intent(UserSetterAct.this, PlanSelectAct.class));
