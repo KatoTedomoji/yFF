@@ -78,8 +78,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         cursor.close();
         return count;
     }
-    public String getAllTableName(){
-        String tableNames = "";
+    public ArrayList<String> getAllTableName(){
+        ArrayList<String> tableNameList = new ArrayList<>();
         String query = "SELECT name FROM sqlite_master WHERE type='table' AND name!='android_metadata' order by name";
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -87,17 +87,17 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if (c.moveToFirst()) {
             while ( !c.isAfterLast() ) {
-                tableNames += c.getString( c.getColumnIndex("name")) + "   |   ";
+                tableNameList.add(c.getString( c.getColumnIndex("name")));
                 c.moveToNext();
             }
         }
-        return tableNames;
+        return tableNameList;
     }
     public ArrayList<String> getRowString(String tableName){
         ArrayList<String> rowStringList = new ArrayList<>();
         String rowString = "";
 
-        String query = "SELECT * FROM " +tableName;
+        String query = "SELECT * FROM " + tableName;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query,null);
 

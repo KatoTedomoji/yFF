@@ -34,6 +34,7 @@ import java.util.HashMap;
 public class Saver{
     static final File mainDir = new File(Environment.getExternalStorageDirectory(),"yFF");
     static final File dataDir = new File(mainDir.getAbsolutePath()+File.separator,"data");
+    static final File planDir = new File(mainDir.getAbsoluteFile() + File.separator, "plan");
     static final File pictureDir = new File(mainDir,".Pictures");// hide pictures from Gallery
 
     private static ArrayList<String> planDataFiles = new ArrayList<>();
@@ -42,7 +43,7 @@ public class Saver{
 
     public static ArrayList<String> getAllFileNameInDataDir(){
         ArrayList<String> fileNameList = new ArrayList<>();
-        for(File file : dataDir.listFiles()){
+        for(File file : planDir.listFiles()){
             String fileName = file.getName();
             int pos = fileName.lastIndexOf(".");
             if(pos > 0){
@@ -55,10 +56,20 @@ public class Saver{
     private static void createDirIfNotExist(){
         mainDir.mkdir();
         dataDir.mkdir();
+        planDir.mkdir();
+        debugLog("asdasd");
+    }
+    public static void createUserDB(String userFileName){
+        createDirIfNotExist();
+        File userDB = new File((dataDir + File.separator), userFileName+".db");
+        try{
+            userDB.createNewFile();
+        }catch (IOException e){
+            debugLog(e);
+        }
     }
     public static boolean createDBFile(String planName,Context context){
         context1 = context;
-        createDirIfNotExist();
         createDataDB(planName);
         return true;
     }
@@ -70,9 +81,9 @@ public class Saver{
     private static boolean createDataDB(String fileName){
         if(planDataFiles.size()>0){
             for(String plan : planDataFiles){
-                if(!fileName.equals(plan)){
+                if(!plan.equals(fileName)){
                     try{
-                        File planDataFile = new File(dataDir +File.separator,fileName+".db");
+                        File planDataFile = new File(planDir +File.separator,fileName+".db");
                         planDataFile.createNewFile();
                         planDataFiles.add(fileName);
                         DatabaseHandler db = new DatabaseHandler(context1,fileName);
@@ -85,7 +96,7 @@ public class Saver{
             }
         }else{
             try{
-                File planDataFile = new File(dataDir+"/",fileName+".db");
+                File planDataFile = new File(planDir+"/",fileName+".db");
                 planDataFile.createNewFile();
                 planDataFiles.add(fileName);
                 DatabaseHandler db = new DatabaseHandler(context1,fileName);
@@ -113,7 +124,7 @@ public class Saver{
         }
         debugLog("Deleted all files in dataDir");
     }
-    public static String getAllTableNameFrom(String databaseFileName){
+    public static ArrayList<String> getAllTableNameFrom(String databaseFileName){
         DatabaseHandler db = dbMap.get(databaseFileName);
         Utilities.debugLog(db.getDatabaseName());
         return db.getAllTableName();

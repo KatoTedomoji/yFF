@@ -1,9 +1,13 @@
 package com.anduong.finn.yff;
 
+import static com.anduong.finn.yff.Saver.createDBFile;
+import static com.anduong.finn.yff.Saver.createUserDB;
 import static com.anduong.finn.yff.Utilities.debugLog;
+import static com.anduong.finn.yff.Utilities.getCurrentDate;
 import static com.anduong.finn.yff.Utilities.setButtonClickColor;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -53,16 +57,11 @@ public class UserSetterAct extends AppCompatActivity {
                     userNameStr = userName.getText().toString();
                     debugLog("Recording user info");
 
-                    Saver.createDBFile("userDB",context);
                     UserInfoDBHandler userDB = new UserInfoDBHandler(context);
-                    //userDB.deleteTable("user");
 
+                    debugLog("Clearing all info");
+                    Saver.deleteALlFileInDataDir();
                     userDB.setUser(userNameStr, userCurrWeight);
-                    debugLog(userDB.getAllTableName().toString());
-                    debugLog(userDB.getUserInfo().toString());
-
-                    userDB.startPlan(true);
-                    debugLog(userDB.getUserInfo().toString());
 
                     startActivity(new Intent(UserSetterAct.this, PlanSelectAct.class));
                     debugLog("Moving to PlanSelectAct");

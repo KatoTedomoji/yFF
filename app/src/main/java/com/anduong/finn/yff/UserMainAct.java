@@ -38,7 +38,7 @@ public class UserMainAct extends AppCompatActivity {
     final Context context = this;
     private TabHost host;
     private TabHost.TabSpec spec;
-    private TextView planName;
+    private TextView planName, weeksLeft;
     private TextView exerciseName,exerciseRep,exerciseLbs;
     private TextView timerText;
     private TextView loadingView;
@@ -76,18 +76,16 @@ public class UserMainAct extends AppCompatActivity {
         weekdayBtnList = new ArrayList<Button>();
         timerOn = false;
         planName = (TextView) findViewById(R.id.schedule_plan_name);
+        weeksLeft = (TextView) findViewById(R.id.schedule_week_num_view);
         exerciseList = new ArrayList<>();
-        loadingView = (TextView) findViewById(R.id.schedule_loading_view);
         dayExercisesMap = new HashMap<>();
 
         Intent intent = getIntent();
-        planTxt = intent.getExtras().getString("planTxt");
 
         host.setup();
         animatingTabWidget();
 
         //tab 1
-        loadingView.setVisibility(View.GONE);
         createTab("Schedule", R.id.tab1);
         makeTabOneContent();
 
@@ -137,6 +135,11 @@ public class UserMainAct extends AppCompatActivity {
 
     //start Tab One Content
     private void makeTabOneContent(){
+        UserInfoDBHandler userDB = new UserInfoDBHandler(context);
+        String[] temp = userDB.get("current_plan_name").split("_");
+        planTxt = temp[0];
+
+        weeksLeft.setText(userDB.get("current_plan_duration"));
         planName.setText(planTxt.toUpperCase());
 
         timer.setVisibility(View.GONE);
@@ -194,7 +197,6 @@ public class UserMainAct extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     currentDayHighlight = weekdayBtn.getText().toString();
-
                     setFocusButtonColor((Button) view);
 
                     exerciseCheckList.removeAllViews();
@@ -229,7 +231,7 @@ public class UserMainAct extends AppCompatActivity {
             exerciseList.add((LinearLayout) parent.getChildAt(childIndex));
         }
 
-        shufflePlanBtn.setOnClickListener(new View.OnClickListener() {//TODO refactor clean up
+        shufflePlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 debugLog("shuffling");
@@ -375,7 +377,6 @@ public class UserMainAct extends AppCompatActivity {
             @Override
             public boolean onLongClick(View view) {
                 if(timerText.getText().toString().equals("Workout Stopped")){
-                    //Utilities.setVisibleAndPop(context,mainHeaderLayout);
                     timerText.setText("Click to Start Workout");
                     timerText.setTextColor(Color.GRAY);
                     timer.setVisibility(View.GONE);

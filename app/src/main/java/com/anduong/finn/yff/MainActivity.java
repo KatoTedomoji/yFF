@@ -1,5 +1,6 @@
 package com.anduong.finn.yff;
 
+import static com.anduong.finn.yff.Saver.createUserDB;
 import static com.anduong.finn.yff.Utilities.debugLog;
 import static com.anduong.finn.yff.Utilities.setVisibleAndPop;
 
@@ -47,13 +48,22 @@ public class MainActivity extends AppCompatActivity {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            UserInfoDBHandler userDB =  new UserInfoDBHandler(context);
-                            if(!userDB.getUserInfo().isEmpty()){
-                                startActivity(new Intent(MainActivity.this, PlanSelectAct.class));
-                                debugLog("User exist, moving to PlanSelect"); //TODO moving to main later if plan started
+                            if(Saver.dataDir.listFiles().length != 0){
+                                UserInfoDBHandler userDB =  new UserInfoDBHandler(context);
+                                if(!userDB.getUserInfo().isEmpty()){
+                                    if(userDB.planHasStarted()){
+                                        startActivity(new Intent(MainActivity.this, UserMainAct.class));
+                                        debugLog("User exist and plan started, moving to UserMainAct");
+                                    }else{
+                                        startActivity(new Intent(MainActivity.this, PlanSelectAct.class));
+                                        debugLog("User exist, but plan hasn't started, moving to PlanSelect");
+                                    }
+                                }else{
+                                    startActivity(new Intent(MainActivity.this, NewUserAct.class));
+                                    debugLog("User dont exist, moving to NewUserAct");
+                                }
                             }else{
                                 startActivity(new Intent(MainActivity.this, NewUserAct.class));
-                                debugLog("User dont exist, moving to NewUserAct"); //TODO moving to main later if plan started
                             }
                         }
                     },1000);
@@ -74,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     accessNo.setVisibility(View.INVISIBLE);
                     permissionView.setText("Access Granted");
-                    Utilities.setVisibleAndPop(context,accessYes);
+                    setVisibleAndPop(context,accessYes);
 
                 } else {
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();

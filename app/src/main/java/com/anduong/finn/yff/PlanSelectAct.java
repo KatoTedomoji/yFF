@@ -1,5 +1,6 @@
 package com.anduong.finn.yff;
 
+import static com.anduong.finn.yff.Saver.getAllFileNameInDataDir;
 import static com.anduong.finn.yff.Utilities.debugLog;
 import static com.anduong.finn.yff.Utilities.setButtonClickColor;
 
@@ -32,7 +33,7 @@ public class PlanSelectAct extends AppCompatActivity {
         planLayout = (LinearLayout) findViewById(R.id.plan_select_plan_list);
         buttonList = new ArrayList<Button>();
 
-        for(String fileName : Saver.getAllFileNameInDataDir()){
+        for(String fileName : getAllFileNameInDataDir()){
             planLayout.addView(createSelectItemView(fileName));
         }
 
@@ -78,15 +79,13 @@ public class PlanSelectAct extends AppCompatActivity {
                 public void onClick(View view) {
                     if(btn.getText().toString().equalsIgnoreCase("add more")){
                         startActivity(new Intent(PlanSelectAct.this, PlanSetterAct.class));
-                        //Saver.deleteALlFileInDataDir();
                         debugLog("Moving to PlanSetterAct");
                     }else{
                         selectedPlanStr = btn.getText().toString();
-
                         Intent intent = new Intent(PlanSelectAct.this, GoalAct.class);
                         intent.putExtra("planTxt",selectedPlanStr);
                         startActivity(intent);
-                        debugLog("Moving to GoalAct");
+                        debugLog("User select " + selectedPlanStr +". Moving to GoalAct");
                     }
                 }
             });
