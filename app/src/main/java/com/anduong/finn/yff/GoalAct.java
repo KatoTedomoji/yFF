@@ -2,6 +2,7 @@ package com.anduong.finn.yff;
 
 import static com.anduong.finn.yff.Utilities.debugLog;
 import static com.anduong.finn.yff.Utilities.getCurrentDate;
+import static com.anduong.finn.yff.Utilities.getReformatCurrentDate;
 
 import android.content.Context;
 import android.content.Intent;
@@ -85,19 +86,20 @@ public class GoalAct extends AppCompatActivity{
         String map = "[";
         for(String tableName : db.getAllTableName()){
            for(String tableContent : db.getRowString(tableName)){
-               map += "?,";
+               map += "?.";
            }
         }
         map += "]";
 
-        userPlanDB.startNewPlan(planName,goalLbs,map);
-        userPlanDB.updateCurrentWeightAt(planName,1,currentLbs);
+        String planTable =  userPlanDB.startNewPlan(planName,goalLbs,map);
+        userPlanDB.updateCurrentWeightAt(planTable,1,currentLbs);
 
-        userDB.updateCurrentPlan(planName);
+        debugLog(planTable + " ASDIJ");
+        //debugLog(userPlanDB.getRowString(planTable).toString() + " \n ADJA");
+
+        userDB.updateCurrentPlanStartDate(getCurrentDate());
+        userDB.updateCurrentPlan(planTable);
         userDB.updateCurrentPlanDuration(duration);
     }
-    private String getReformatCurrentDate(){
-        String[] date = getCurrentDate().split("-");
-        return date[2] + date[0] + date[1];
-    }//format yyyyMMdd
+
 }

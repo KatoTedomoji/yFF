@@ -23,6 +23,7 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
     private static String KEY_ID = "id";
     private static final String KEY_USER = "user_name";
     private static final String KEY_START_DATE = "start_date";
+    private static final String KEY_CURRENT_PLAN_START_DATE = "current_plan_start_date";
     private static final String KEY_CURRENT_PLAN = "current_plan_name";
     private static final String KEY_CURRENT_PLAN_DURATION = "current_plan_duration";
     private static final String KEY_START_WEIGHT = "start_weight";
@@ -31,7 +32,7 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
     private static final String KEY_REPS_COMPLETED = "reps_completed";
     private static final String KEY_PR = "personal_records";
 
-    private static final String[] KEYS = {KEY_ID, KEY_USER, KEY_START_DATE, KEY_CURRENT_PLAN, KEY_CURRENT_PLAN_DURATION, KEY_START_WEIGHT,
+    private static final String[] KEYS = {KEY_ID, KEY_USER, KEY_START_DATE,KEY_CURRENT_PLAN_START_DATE, KEY_CURRENT_PLAN, KEY_CURRENT_PLAN_DURATION, KEY_START_WEIGHT,
                                             KEY_EXERCISE_COMPLETED, KEY_EXERCISE_MISSED, KEY_REPS_COMPLETED, KEY_PR};
 
     private static String userName;
@@ -60,6 +61,7 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_USER, userName);
         values.put(KEY_START_DATE, Utilities.getCurrentDate());
+        values.put(KEY_CURRENT_PLAN_START_DATE, "");
         values.put(KEY_CURRENT_PLAN, "none");
         values.put(KEY_CURRENT_PLAN_DURATION, 0);
         values.put(KEY_START_WEIGHT,userCurrentWeight);
@@ -77,6 +79,7 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
                 KEY_ID                          +" INTEGER PRIMARY KEY,"+
                 KEY_USER                        +" TEXT,"+
                 KEY_START_DATE                  +" TEXT,"+
+                KEY_CURRENT_PLAN_START_DATE     +" TEXT,"+
                 KEY_CURRENT_PLAN                +" TEXT,"+
                 KEY_CURRENT_PLAN_DURATION       +" NUMERIC,"+
                 KEY_START_WEIGHT                +" NUMERIC,"+
@@ -121,6 +124,11 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
         }
     }
 
+    public void updateCurrentPlanStartDate(String date){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_NAME + " SET " + KEY_CURRENT_PLAN_START_DATE + "='" + date+"' WHERE id =1";
+        db.execSQL(query);
+    }
     public void updateCurrentPlan(String planName){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + TABLE_NAME + " SET " + KEY_CURRENT_PLAN + "='" + planName+"' WHERE id =1";
@@ -164,8 +172,8 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
                 output = content.get(i);
             }
         }
-
-        return output;
+        String[] temp = output.split("-");
+        return temp[0];
     }
     public ArrayList<String> getAllColumnContentFrom(String tableName){
         ArrayList<String> rowStringList = new ArrayList<>();

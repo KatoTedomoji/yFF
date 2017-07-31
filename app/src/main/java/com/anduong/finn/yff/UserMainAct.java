@@ -138,6 +138,10 @@ public class UserMainAct extends AppCompatActivity {
     private void makeTabOneContent(){
 
         dbPlanString = userDB.get("current_plan_name");
+        for(String a : planDB.getAllTableName()){
+            debugLog("Table names from main: "+a);
+        }
+        debugLog("\n");
 
         String[] temp = dbPlanString.split("_");
         planTxt = temp[0];
@@ -147,15 +151,18 @@ public class UserMainAct extends AppCompatActivity {
 
         timer.setVisibility(View.GONE);
 
+        getWorkoutMap();
         setupWeekdayButtonsFor(buttonsParent);
         setupExerciseListForEachDayBtn();
+        //setUpExerciseViewColor(getWorkoutMap());
+
         highlightTodaysBtnIn(weekdayBtnList);
         setupResetBtn();
         timerListening();
         scrollTodaysButton();
         setUpExerciseViewColor(getWorkoutMap());
 
-        planDB.updateExerciseMapAt(dbPlanString, 1, getWorkoutMap());
+       // planDB.updateExerciseMapAt(dbPlanString, 1, getWorkoutMap());
     }//set text for planName view
 
     private void loadingAnimation(final ArrayList<View> exerciseList){
@@ -344,7 +351,7 @@ public class UserMainAct extends AppCompatActivity {
                             map_content[view.getId()] = "0";
                             planDB.updateExerciseMapAt(dbPlanString,1,arrayToString(map_content));
                         }
-                        debugLog(planDB.getRowString(dbPlanString).toString());
+                        debugLog(planDB.getRowString(dbPlanString).toString() + "\nASD");
                     }
                 }
             });
@@ -354,7 +361,8 @@ public class UserMainAct extends AppCompatActivity {
         map = map.replace("[","");
         map = map.replace("]","");
 
-        map_content = map.split(",");
+        map_content = map.split("\\.");
+        debugLog(map);
         ArrayList<View> views = new ArrayList<>();
 
         for(String name : TABLE_NAMES){
@@ -371,7 +379,7 @@ public class UserMainAct extends AppCompatActivity {
             viewID.add(id);
         }
 
-        for(int i = 0; i < views.size(); i++){
+        for(int i = 0; i <= views.size()-1; i++){
             if(map_content[i].equalsIgnoreCase("?")){
                 views.get(i).setBackgroundColor(Color.WHITE);
             }else if(map_content[i].equalsIgnoreCase("1")){
@@ -448,20 +456,11 @@ public class UserMainAct extends AppCompatActivity {
         });
     }//click timer will start, click again to stop.  Long press to reset, then reset clicked exercise card color.
     private String getWorkoutMap(){
-        String map = "[";
-        for(String a : TABLE_NAMES){
-            for(View v : dayExercisesMap.get(a)){
-                map += "?,";
-            }
-        }
-        return map + "]";
-    }
-    private String arrayToString(String[] arr){
-        String output = "[";
-        for(String str : arr){
-            output += str + ",";
-        }
-        return output+"]";
+        ArrayList<String> rowStr = planDB.getRowString(dbPlanString);
+        String[] info = rowStr.get(rowStr.size()-1).split(",");
+        String map = info[2];
+
+        return map;
     }
     //start Tab Two Content
     private void makeTabTwoContent(){//TODO read from database

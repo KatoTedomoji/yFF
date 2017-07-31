@@ -118,11 +118,16 @@ public class Saver{
     }
 
     public static void deleteAllFiles(){
-        File[] planDirFiles = dataDir.listFiles();
-        for(File file : planDirFiles){
-            file.delete();
+        if(dataDir.exists()){
+            File[] planDirFiles = dataDir.listFiles();
+            for(File file : planDirFiles){
+                file.delete();
+            }
+            debugLog("Deleted all files");
+        }else{
+            debugLog("dataDir do not exist");
         }
-        debugLog("Deleted all files");
+
     }
     public static ArrayList<String> getAllTableNameFrom(String databaseFileName){
         DatabaseHandler db = dbMap.get(databaseFileName);

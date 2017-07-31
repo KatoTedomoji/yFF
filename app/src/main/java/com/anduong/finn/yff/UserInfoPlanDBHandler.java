@@ -1,5 +1,6 @@
 package com.anduong.finn.yff;
 
+import static com.anduong.finn.yff.Utilities.debugLog;
 import static com.anduong.finn.yff.Utilities.getCurrentDate;
 
 import android.content.ContentValues;
@@ -30,10 +31,45 @@ public class UserInfoPlanDBHandler extends UserInfoDBHandler{
         super(context);
     }
 
-    public void startNewPlan(String planName, double goalWeight, String map){
-        deleteTable(planName);
-        createTableIfNotExist(planName);
-        insertNewRowInto(planName,goalWeight, map);
+    public String startNewPlan(String planName, double goalWeight, String map){
+        String newPlan = planName;
+        int count = 0;
+
+        for(String tableName : getAllTableName()){
+            String[] temp = tableName.split("_");
+            if(temp.length > 1){
+                {
+                    String temp1 = temp[0]+"_"+temp[1];
+                    if(temp1.equals(planName)){
+                        count++;
+                    }
+                }
+            }
+        }
+        for(String tableName : getAllTableName()){
+            String[] temp = tableName.split("_");
+            if(temp.length > 1){// if not user
+                {
+                    String temp1 = temp[0]+"_"+temp[1];
+                    debugLog(temp1 + " temp1");
+                    int count1 = 0 ;
+                    if(temp1.equals(planName)){
+                        if(temp.length > 2){
+                            debugLog("Triggered : "+(count1++));
+                            temp[2] = Integer.toString(count);
+                            newPlan += "_" + temp[2];
+                        }else {
+                            newPlan += "_" + count;
+                        }
+                    }
+                }
+            }
+
+        }
+        createTableIfNotExist(newPlan);
+        insertNewRowInto(newPlan,goalWeight, map);
+
+        return newPlan;
     }
     public void insertNewRowInto(String planName,double goalWeight ,String map){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -64,19 +100,23 @@ public class UserInfoPlanDBHandler extends UserInfoDBHandler{
         c.close();
         return tableNames;
     }
-    public int getTableCount(String tableName){
+    public int getTableCount(){
         int count = 0;
-
-        String countQuery = "SELECT * FROM " + tableName;
-
+        String countQuery = "SELECT name FROM sqlite_master WHERE type='table'";
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery,null);
+        Cursor c = db.rawQuery(countQuery, null);
 
-        count = cursor.getCount();
-        cursor.close();
+        if (c.moveToFirst()) {
+            while ( !c.isAfterLast() ) {
+                count++;
+                c.moveToNext();
+            }
+        }
+
+        c.close();
+        db.close();
         return count;
     }
-
 
     public void updateExerciseMapAt(String TABLE_NAME, int ROW_ID, String map){
         SQLiteDatabase db = this.getWritableDatabase();

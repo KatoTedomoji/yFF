@@ -1,6 +1,7 @@
 package com.anduong.finn.yff;
 
 import static com.anduong.finn.yff.Saver.createUserDB;
+import static com.anduong.finn.yff.Saver.dataDir;
 import static com.anduong.finn.yff.Utilities.debugLog;
 import static com.anduong.finn.yff.Utilities.setVisibleAndPop;
 
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if(Saver.dataDir.listFiles().length != 0){
+                            if(dataDir.exists() && dataDir.list().length>0){
                                 UserInfoDBHandler userDB =  new UserInfoDBHandler(context);
                                 if(userDB.getTableCount() > 0){
                                     if(userDB.planHasStarted()){

@@ -116,4 +116,16 @@ public class Utilities {
     public static int debugLog( Exception e){
         return Log.d("appDebug","",e);
     } //generate debug log with exception for testing
+    public static String arrayToString(String[] arr){
+        String output = "[";
+        for(String str : arr){
+            output += str + ".";
+        }
+        return output+"]";
+    }
+    public static String getReformatCurrentDate(){
+        String[] date = getCurrentDate().split("-");
+        return date[2] + date[0] + date[1];
+    }//format yyyyMMdd
+
 }
