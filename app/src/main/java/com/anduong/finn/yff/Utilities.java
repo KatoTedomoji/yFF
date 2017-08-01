@@ -127,5 +127,8 @@ public class Utilities {
         String[] date = getCurrentDate().split("-");
         return date[2] + date[0] + date[1];
     }//format yyyyMMdd
+    public static int getGreenColor(){
+        return Color.parseColor("#51ef9d");
+    }
 
 }

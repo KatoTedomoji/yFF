@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.view.View.OnClickListener;
 import android.content.Context;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * Created by An Duong on 6/11/2017.
@@ -23,11 +24,10 @@ import android.widget.EditText;
 
 public class UserSetterAct extends AppCompatActivity {
     private Button nextBtn;
-    private double userCurrWeight, userGoalWeight;
+    private double userCurrWeight;
     private String userNameStr;
     private EditText userName,currWeight;
     private final Context context = this;
-    private UserInfo user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +51,12 @@ public class UserSetterAct extends AppCompatActivity {
         nextBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Checker.hasText(userName) && Checker.isNum(currWeight)){
-                    setButtonClickColor(nextBtn,Color.GREEN);
+                if(userName.getText().toString().trim().length() <= 0 ){
+                    Toast.makeText(context,"What is your name?",Toast.LENGTH_SHORT);
+                } else if(currWeight.getText().toString().trim().length() <= 0){
+                    Toast.makeText(context,"What is your current weight?",Toast.LENGTH_SHORT);
+                } else {
+
                     userCurrWeight = Double.parseDouble(currWeight.getText().toString());
                     userNameStr = userName.getText().toString();
                     debugLog("Recording user info");
@@ -64,10 +68,7 @@ public class UserSetterAct extends AppCompatActivity {
                     userDB.setUser(userNameStr, userCurrWeight);
 
                     startActivity(new Intent(UserSetterAct.this, PlanSelectAct.class));
-                    debugLog("Moving to PlanSelectAct");
-                }else{
-                    setButtonClickColor(nextBtn,Color.RED);
-                }
+                    debugLog("Moving to PlanSelectAct");                }
             }
         });
 

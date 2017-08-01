@@ -3,6 +3,7 @@ package com.anduong.finn.yff;
 /**
  * Created by an duong on 7/21/17.
  */
+import static com.anduong.finn.yff.Utilities.debugLog;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,20 +21,22 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
 
     private static final String TABLE_NAME = "user";
     // User Info
-    private static String KEY_ID = "id";
-    private static final String KEY_USER = "user_name";
-    private static final String KEY_START_DATE = "start_date";
-    private static final String KEY_CURRENT_PLAN_START_DATE = "current_plan_start_date";
-    private static final String KEY_CURRENT_PLAN = "current_plan_name";
-    private static final String KEY_CURRENT_PLAN_DURATION = "current_plan_duration";
-    private static final String KEY_START_WEIGHT = "start_weight";
-    private static final String KEY_EXERCISE_COMPLETED = "exercise_completed";
-    private static final String KEY_EXERCISE_MISSED = "exercise_missed";
-    private static final String KEY_REPS_COMPLETED = "reps_completed";
-    private static final String KEY_PR = "personal_records";
+    static String KEY_ID = "id";
+    static final String KEY_USER = "user_name";
+    static final String KEY_START_DATE = "start_date";
+    static final String KEY_CURRENT_PLAN_START_DATE = "current_plan_start_date";
+    static final String KEY_CURRENT_PLAN = "current_plan_name";
+    static final String KEY_CURRENT_PLAN_DURATION = "current_plan_duration";
+    static final String KEY_START_WEIGHT = "start_weight";
+    static final String KEY_EXERCISE_COMPLETED = "exercise_completed";
+    static final String KEY_EXERCISE_MISSED = "exercise_missed";
+    static final String KEY_REPS_COMPLETED = "reps_completed";
+    static final String KEY_PR = "personal_records";
+    static final String KEY_TIMER = "timer";
+    static final String KEY_TIMER_INFO = "timer_info";
 
-    private static final String[] KEYS = {KEY_ID, KEY_USER, KEY_START_DATE,KEY_CURRENT_PLAN_START_DATE, KEY_CURRENT_PLAN, KEY_CURRENT_PLAN_DURATION, KEY_START_WEIGHT,
-                                            KEY_EXERCISE_COMPLETED, KEY_EXERCISE_MISSED, KEY_REPS_COMPLETED, KEY_PR};
+    static final String[] KEYS = {KEY_ID, KEY_USER, KEY_START_DATE,KEY_CURRENT_PLAN_START_DATE, KEY_CURRENT_PLAN, KEY_CURRENT_PLAN_DURATION, KEY_START_WEIGHT,
+                                            KEY_EXERCISE_COMPLETED, KEY_EXERCISE_MISSED, KEY_REPS_COMPLETED, KEY_PR, KEY_TIMER, KEY_TIMER_INFO};
 
     private static String userName;
     private static double userCurrentWeight;
@@ -69,6 +72,8 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
         values.put(KEY_EXERCISE_MISSED, 0);
         values.put(KEY_REPS_COMPLETED, 0);
         values.put(KEY_PR, "");
+        values.put(KEY_TIMER, "off");
+        values.put(KEY_TIMER_INFO,"");
 
         db.insert(TABLE_NAME, null, values);
         db.close();
@@ -86,7 +91,10 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
                 KEY_EXERCISE_COMPLETED          +" NUMERIC,"+
                 KEY_EXERCISE_MISSED             +" NUMERIC,"+
                 KEY_REPS_COMPLETED              +" NUMERIC,"+
-                KEY_PR                          +" TEXT)";
+                KEY_PR                          +" TEXT,"+
+                KEY_TIMER                       +" TEXT,"+
+                KEY_TIMER_INFO                  +" TEXT"+
+                ")";
 
         db.execSQL(CREATE_WEEKDAY_TABLE);
     }
@@ -100,7 +108,9 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
+
         cursor.moveToLast();
+        debugLog(cursor.getPosition()+" is cursor position");
 
         for(String KEY : KEYS){
             rowStringList.add(cursor.getString(cursor.getColumnIndex(KEY)));
@@ -117,7 +127,7 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
         db.execSQL(query);
     }
     public boolean planHasStarted(){
-        if(!getUserInfo().get(3).equals("none")){
+        if(!getUserInfo().get(4).equals("none")){
             return true;
         }else{
             return false;
@@ -125,6 +135,8 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
     }
 
     public void updateCurrentPlanStartDate(String date){
+        date = date.replaceAll("-","");
+        debugLog(date +" SAD");
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + TABLE_NAME + " SET " + KEY_CURRENT_PLAN_START_DATE + "='" + date+"' WHERE id =1";
         db.execSQL(query);
@@ -163,7 +175,33 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
         String query = "UPDATE " + TABLE_NAME + " SET " + KEY_CURRENT_PLAN_DURATION + "='" + newRepsCompleted+"' WHERE id =1";
         db.execSQL(query);
     }
+    public void updateTimerStatus(boolean on){
+        String status = "";
+        if(on){
+            status = "on";
+        }else{
+            status = "off";
+        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_NAME + " SET " + KEY_TIMER + "='" + status +"' WHERE id =1";
+        db.execSQL(query);
+    }
+    public void updateTimerInfo(String info){
+        String currentInfo = get(KEY_TIMER_INFO) ;
+        String newInfo = currentInfo + "," + info;
 
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_NAME + " SET " + KEY_TIMER_INFO + "='" + newInfo +"' WHERE id =1";
+        db.execSQL(query);
+    }
+
+    public boolean getTimerStatus(){
+        if(get(KEY_TIMER).equalsIgnoreCase("on")){
+            return true;
+        }else{
+            return false;
+        }
+    }
     public String get(String columnName){
         ArrayList<String> content = getAllColumnContentFrom(TABLE_NAME);
         String output = "";
@@ -190,15 +228,32 @@ public class UserInfoDBHandler extends SQLiteOpenHelper {
     }
 
     public int getTableCount(){
-        int count = 0;
-
-        String countQuery = "SELECT * FROM " + TABLE_NAME;
-
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery,null);
 
-        count = cursor.getCount();
-        cursor.close();
-        return count;
+        ArrayList<String> arrTblNames = new ArrayList<String>();
+        Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+
+        if (c.moveToFirst()) {
+            while ( !c.isAfterLast() ) {
+                arrTblNames.add( c.getString( c.getColumnIndex("name")) );
+                c.moveToNext();
+            }
+        }
+        return arrTblNames.size();
+    }
+    public ArrayList<String> getAllTableNames(){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        ArrayList<String> arrTblNames = new ArrayList<String>();
+        Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+
+        if (c.moveToFirst()) {
+            while ( !c.isAfterLast() ) {
+                arrTblNames.add( c.getString( c.getColumnIndex("name")) );
+                c.moveToNext();
+            }
+        }
+
+        return arrTblNames;
     }
 }

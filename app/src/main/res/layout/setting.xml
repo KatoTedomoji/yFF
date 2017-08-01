@@ -1,27 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff">
-
-    <RelativeLayout
-        android:id="@+id/setting_parent_box"
+    <LinearLayout
+        android:id="@+id/timer_parent_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
         android:layout_margin="5dp"
         android:background="@drawable/button_border">
-
-        <Switch
-            android:id="@+id/setting_parent_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
-            android:switchMinWidth="60dp" />
-
         <TextView
             android:id="@+id/setting_parent"
             android:layout_width="wrap_content"
@@ -30,19 +19,91 @@
             android:text="Timer"
             android:textColor="#000000"
             android:textSize="40dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_weight="1"/>
+        <Switch
+            android:id="@+id/setting_parent_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-10dp"
+            android:layout_marginEnd="10dp"
+            android:switchMinWidth="60dp"
+            android:layout_weight="2"/>
+    </LinearLayout>
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/setting_child_box"
+    <LinearLayout
+        android:id="@+id/timer_children_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/setting_parent_box"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/button_border"
-        android:layout_margin="5dp">
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="5dp"
+        android:background="@drawable/button_border">
+        <LinearLayout
+            android:id="@+id/setting_timer_weekday_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weekday Reminder"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"/>
+            <TextView
+                android:id="@+id/setting_timer_weekday_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click to set"
+                android:background="@color/white"
+                android:textSize="20dp"
+                android:layout_weight="1"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="8dp"
+                android:textAlignment="textEnd"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/setting_timer_weekend_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weekend Reminder"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"/>
+            <TextView
+                android:id="@+id/setting_timer_weekend_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click to set"
+                android:background="@color/white"
+                android:textSize="20dp"
+                android:layout_weight="1"
+                android:layout_marginBottom="3dp"
+                android:layout_marginRight="8dp"
+                android:textAlignment="textEnd"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:layout_margin="5dp"
+        android:background="@drawable/button_border">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="More later"/>
+    </LinearLayout>
 
 
-</RelativeLayout>
+</LinearLayout>

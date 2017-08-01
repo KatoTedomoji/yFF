@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 loadingBar.setVisibility(View.GONE);
                 if(permissionGranted()){
                     setVisibleAndPop(context,accessYes);
+
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {

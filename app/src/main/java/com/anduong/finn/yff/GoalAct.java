@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -64,15 +65,22 @@ public class GoalAct extends AppCompatActivity{
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(GoalAct.this, UserMainAct.class);
-                createNewPlan();
+                if (weeksNumEdit.getText().toString().trim().length() <= 0 || Integer.parseInt(weeksNumEdit.getText().toString()) <= 0){
+                    Toast.makeText(context,"How many weeks do you want this plan to last?",Toast.LENGTH_SHORT).show();
+                } else if (lbsEdit.getText().toString().trim().length() == 0 || Integer.parseInt(lbsEdit.getText().toString()) <= 0){
+                    Toast.makeText(context,"What is your goal weight?",Toast.LENGTH_SHORT).show();
+                } else if (currLbsEdit.getText().toString().trim().length() == 0 || Integer.parseInt(currLbsEdit.getText().toString()) <= 0){
+                    Toast.makeText(context,"What is your current weight?",Toast.LENGTH_SHORT).show();
+                } else {
+                    createNewPlan();
+                    startActivity(new Intent(GoalAct.this, UserMainAct.class));
+                    debugLog("user click confirmBtn. Moving to UserMainAct");
+                }
 
-                startActivity(intent);
-                debugLog("user click confirmBtn. Moving to UserMainAct");
+
             }
         });
     }
-
     private void createNewPlan(){
         String planName = planNameTxt + "_" + getReformatCurrentDate();
         double goalLbs = Double.parseDouble(lbsEdit.getText().toString());
@@ -93,9 +101,6 @@ public class GoalAct extends AppCompatActivity{
 
         String planTable =  userPlanDB.startNewPlan(planName,goalLbs,map);
         userPlanDB.updateCurrentWeightAt(planTable,1,currentLbs);
-
-        debugLog(planTable + " ASDIJ");
-        //debugLog(userPlanDB.getRowString(planTable).toString() + " \n ADJA");
 
         userDB.updateCurrentPlanStartDate(getCurrentDate());
         userDB.updateCurrentPlan(planTable);

@@ -1,5 +1,6 @@
 package com.anduong.finn.yff;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -7,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,10 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.content.Context;
 import android.widget.Chronometer;
+import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -53,6 +57,8 @@ public class UserMainAct extends AppCompatActivity {
     private static String currentDayHighlight;
     private static String[] TABLE_NAMES = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
     private boolean timerOn;
+    private LinearLayout timersChildLayout,timerWeekdayLayout,timerWeekendLayout;
+    private Switch timerSwitch;
 
     static boolean timerStarted = false;
     static long timeStopped = 0;
@@ -83,6 +89,10 @@ public class UserMainAct extends AppCompatActivity {
         weeksLeft = (TextView) findViewById(R.id.schedule_week_num_view);
         exerciseList = new ArrayList<>();
         dayExercisesMap = new HashMap<>();
+        timersChildLayout = (LinearLayout) findViewById(R.id.timer_children_layout) ;
+        timerSwitch = (Switch) findViewById(R.id.setting_parent_switch);
+        timerWeekdayLayout = (LinearLayout) findViewById(R.id.setting_timer_weekday_layout);
+        timerWeekendLayout = (LinearLayout) findViewById(R.id.setting_timer_weekend_layout);
 
         host.setup();
         animatingTabWidget();
@@ -138,15 +148,11 @@ public class UserMainAct extends AppCompatActivity {
     private void makeTabOneContent(){
 
         dbPlanString = userDB.get("current_plan_name");
-        for(String a : planDB.getAllTableName()){
-            debugLog("Table names from main: "+a);
-        }
-        debugLog("\n");
 
         String[] temp = dbPlanString.split("_");
         planTxt = temp[0];
 
-        weeksLeft.setText(userDB.get("current_plan_duration"));
+        setupWeeksLeft();
         planName.setText(planTxt.toUpperCase());
 
         timer.setVisibility(View.GONE);
@@ -154,15 +160,12 @@ public class UserMainAct extends AppCompatActivity {
         getWorkoutMap();
         setupWeekdayButtonsFor(buttonsParent);
         setupExerciseListForEachDayBtn();
-        //setUpExerciseViewColor(getWorkoutMap());
 
         highlightTodaysBtnIn(weekdayBtnList);
         setupResetBtn();
         timerListening();
         scrollTodaysButton();
         setUpExerciseViewColor(getWorkoutMap());
-
-       // planDB.updateExerciseMapAt(dbPlanString, 1, getWorkoutMap());
     }//set text for planName view
 
     private void loadingAnimation(final ArrayList<View> exerciseList){
@@ -181,7 +184,25 @@ public class UserMainAct extends AppCompatActivity {
         }
     }, 5000);
 }//TODO loading animation for mainuseract
-
+    private void setupWeeksLeft(){
+        int startWeek = Integer.parseInt(userDB.get("current_plan_start_date"));
+        String currentWeekStr = getCurrentDate().replaceAll("-","");
+        int currentWeek = Integer.parseInt(currentWeekStr);
+        if(getCurrentWeekDay().equalsIgnoreCase("Monday")){
+            if(startWeek > currentWeek){
+                int weeksLeftInt = Integer.parseInt(userDB.get(userDB.KEY_CURRENT_PLAN_DURATION));
+                weeksLeftInt = weeksLeftInt-1;
+                if(weeksLeftInt < 0){
+                    debugLog("workout plan completed, weeks left = " + weeksLeftInt);
+                    startActivity(new Intent(UserMainAct.this, PlanSelectAct.class));
+                }else{
+                    userDB.updateCurrentPlanDuration(weeksLeftInt);
+                    debugLog(weeksLeftInt + " weeks left");
+                }
+            }
+            weeksLeft.setText(userDB.get(userDB.KEY_CURRENT_PLAN_DURATION));
+        }
+    }
     private void setupExerciseListForEachDayBtn(){
         for(String name: TABLE_NAMES){
             dayExercisesMap.put(name, new ArrayList<View>());
@@ -216,7 +237,7 @@ public class UserMainAct extends AppCompatActivity {
                         timerText.setText("Click to start workout.");
                     }else{
                         timerText.setEnabled(false);
-                        timerText.setText("You cannot time travel.");
+                        timerText.setText("This day hasn't come.");
                         timer.setVisibility(View.GONE);
                     }
 
@@ -242,11 +263,27 @@ public class UserMainAct extends AppCompatActivity {
         resetPlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(UserMainAct.this, PlanSelectAct.class));
-                Utilities.debugLog("User cancel plan setter, moving to PlanSelectAct");
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+                dialogBuilder.setTitle("Warning");
+                dialogBuilder.setMessage("If you click ok, this will reset your current progress and earn you an incomplete in your journal.");
+                dialogBuilder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        userDB.updateCurrentPlan("none");
+                        startActivity(new Intent(UserMainAct.this, PlanSelectAct.class));
+                    }
+                });
+                dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        debugLog("User cancel reset plan");
+                    }
+                });
+                AlertDialog dialog = dialogBuilder.create();
+                dialog.show();
             }
         });
-    }//TODO add confirm box with user, if yes move to PlanSelect else do nothing
+    }
     private void setupShuffleBtnFor(final LinearLayout parent){
         exerciseList.clear();
         setButtonTextClickColor(shufflePlanBtn,Color.GREEN);
@@ -343,12 +380,16 @@ public class UserMainAct extends AppCompatActivity {
                     ColorDrawable backgroundColor = (ColorDrawable) view.getBackground();
                     if(timerOn && timerStarted && currentDayHighlight.equals(getCurrentWeekDay())){
                         if(backgroundColor.getColor() == Color.WHITE){
-                            view.setBackgroundColor(Color.parseColor("#51ef9d"));
+                            view.setBackgroundColor(getGreenColor());
                             map_content[view.getId()] = "1";
                             planDB.updateExerciseMapAt(dbPlanString,1,arrayToString(map_content));
                         }else{
                             view.setBackgroundColor(Color.WHITE);
-                            map_content[view.getId()] = "0";
+                            if(currentDayHighlight.equalsIgnoreCase(getCurrentWeekDay())){
+                                map_content[view.getId()] = "?";
+                            }else {
+                                map_content[view.getId()] = "0";
+                            }
                             planDB.updateExerciseMapAt(dbPlanString,1,arrayToString(map_content));
                         }
                         debugLog(planDB.getRowString(dbPlanString).toString() + "\nASD");
@@ -383,7 +424,7 @@ public class UserMainAct extends AppCompatActivity {
             if(map_content[i].equalsIgnoreCase("?")){
                 views.get(i).setBackgroundColor(Color.WHITE);
             }else if(map_content[i].equalsIgnoreCase("1")){
-                views.get(i).setBackgroundColor(Color.GREEN);
+                views.get(i).setBackgroundColor(getGreenColor());
             }else if(map_content[i].equalsIgnoreCase("0")){
                 views.get(i).setBackgroundColor(Color.RED);
             }
@@ -464,6 +505,10 @@ public class UserMainAct extends AppCompatActivity {
     }
     //start Tab Two Content
     private void makeTabTwoContent(){//TODO read from database
+        setJournalHeader();
+        setJournalText();
+    }
+    private void setJournalHeader(){
         UserInfoDBHandler userDB = new UserInfoDBHandler(context);
         ArrayList<String> userInfo = userDB.getUserInfo();
 
@@ -475,9 +520,62 @@ public class UserMainAct extends AppCompatActivity {
         journalStart.setText("Started at " + userInfo.get(5) + " lbs, ");
         journalGoal.setText("on " + userInfo.get(2));
     }
+    private void setJournalText(){
+        TextView journalTextView = (TextView) findViewById(R.id.journalView);
+        String text = userDB.getTableCount() +" is how many tables there are\n";
+        ArrayList<String> arr = userDB.getAllTableNames();
+        for(String a : arr){
+            text += a + " \n";
+        }
+
+        journalTextView.setText("not yet implemented");
+    }//TODO
 
     //start Tab Three Content
     private void makeTabThreeContent(){
+        setTimerStatus();
+        setTimerSwitchListener();
+        listeningToTimerButton();
     }//TODO setting GUI code
-
+    private void setTimerStatus(){
+        if(userDB.getTimerStatus()){
+            timerSwitch.setChecked(true);
+            timersChildLayout.setVisibility(View.VISIBLE);
+        }else{
+            timerSwitch.setChecked(false);
+            timersChildLayout.setVisibility(View.GONE);
+        }
+    }
+    private void setTimerSwitchListener(){
+        timerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked){
+                    timersChildLayout.setVisibility(View.VISIBLE);
+                    userDB.updateTimerStatus(true);
+                }else{
+                    timersChildLayout.setVisibility(View.GONE);
+                    userDB.updateTimerStatus(false);
+                }
+            }
+        });
+    }
+    private void listeningToTimerButton(){
+        timerWeekendLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserMainAct.this, TimeSelectorAct.class);
+                intent.putExtra("week","Weekend");
+                startActivity(intent);
+            }
+        });
+        timerWeekdayLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserMainAct.this, TimeSelectorAct.class);
+                intent.putExtra("week","Weekday");
+                startActivity(intent);
+            }
+        });
+    }
 }
